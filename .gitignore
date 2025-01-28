@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs
+/ClearTask/obj/Debug/net8.0-android/android
+/ClearTask/obj/Debug/net8.0-android/android-arm64
+/ClearTask/obj/Debug/net8.0-android/app_shared_libraries/arm64-v8a
+*.json
+/ClearTask/obj/Debug/net8.0-android/R.txt
