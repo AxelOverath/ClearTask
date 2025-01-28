@@ -3,8 +3,16 @@
 ################################################################################
 
 /.vs
-/ClearTask/obj/Debug/net8.0-android/android
-/ClearTask/obj/Debug/net8.0-android/android-arm64
-/ClearTask/obj/Debug/net8.0-android/app_shared_libraries/arm64-v8a
-*.json
-/ClearTask/obj/Debug/net8.0-android/R.txt
+/ClearTask/obj/.cache/com.companyname.cleartask.flag
+/ClearTask/bin/Debug/net8.0-android/ClearTask.pdb
+/ClearTask/bin/Debug/net8.0-android/ClearTask.dll
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask-Signed.apk
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask-Signed.apk.idsig
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask.apk
+/ClearTask/bin/Debug/net8.0-android/ClearTask.dll
+/ClearTask/bin/Debug/net8.0-android/ClearTask.pdb
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask-Signed.apk
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask-Signed.apk.idsig
+/ClearTask/bin/Debug/net8.0-android/com.companyname.cleartask.apk
+/ClearTask/bin/Debug/net8.0-android/ClearTask.dll
+/ClearTask/obj/.cache/com.companyname.cleartask.flag
