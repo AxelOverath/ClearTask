@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClearTask.ViewModels"
+             x:Class="ClearTask.TaskList">
+
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Tasks" FontSize="24" HorizontalOptions="Center" Margin="0,0,0,10" />
+            <CollectionView ItemsSource="{Binding Tasks}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="0,5" BorderColor="Gray" CornerRadius="10">
+                            <StackLayout>
+                                <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="16" />
+                                <Label Text="Tags: {Binding Tags}" FontSize="14" />
+                                <Label Text="Deadline: {Binding Deadline, StringFormat='Deadline: {0:MM/dd/yyyy}'}" FontSize="14" IsVisible="{Binding Deadline, Converter={StaticResource NullToVisibilityConverter}}" />
+                                <Label Text="Status: {Binding Status}" FontSize="14" />
+                                <Label Text="Assigned To: {Binding AssignedTo.Name}" FontSize="14" />
+                                <Label Text="Sector: {Binding Sector.Name}" FontSize="14" />
+                                <Image Source="{Binding Photo}" HeightRequest="100" Aspect="AspectFill" IsVisible="{Binding Photo}" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

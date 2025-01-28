@@ -1,0 +1,24 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+.vs/
+
+# Ignore build output directories
+bin/
+obj/
+
+# Optional: If you're using Visual Studio Code, ignore workspace-specific settings
+.vscode/
+
+# Ignore package manager files (optional)
+node_modules/
+*.log
+
+# Ignore specific file extensions (optional)
+*.user
+*.suo
+*.tmp
+*.ide
