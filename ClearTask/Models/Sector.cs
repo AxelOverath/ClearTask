@@ -1,3 +1,6 @@
+using ClearTask.Models;
+using Task = ClearTask.Models.Task;
+
 public class Sector
 {
     private int id;
@@ -32,7 +35,3 @@ public class Sector
     public List<Employee> Employees => employees;
     public List<Handyman> Handymen => handymen;
 }
-
-public class Employee { }
-
-public class Handyman { }

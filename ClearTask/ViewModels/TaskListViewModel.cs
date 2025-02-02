@@ -18,37 +18,44 @@ public class TaskListViewModel : INotifyPropertyChanged
             }
         }
 
-        public TaskListViewModel()
+    public TaskListViewModel()
+    {
+        // Hardcoded list of tasks
+        Tasks = new ObservableCollection<Task>
         {
-            // Hardcoded list of tasks
-            Tasks = new ObservableCollection<Task>
+            new Task
             {
-                new Task
+                Id = 1,
+                Title = "Fix plumbing issue",
+                Description = "Repair leaking pipe in the kitchen.",
+                Photo = "plumbing.png",
+                Tags = new List<Tag>
                 {
-                    Id = 1,
-                    Title = "Fix plumbing issue",
-                    Description = "Repair leaking pipe in the kitchen.",
-                    Photo = "plumbing.png",
-                    Tags = new List<string> { "Plumbing", "Urgent" },
-                    Deadline = DateTime.Now.AddDays(3),
-                    Status = TaskStatus.Pending,
-                    AssignedTo = new Handyman { Name = "John Doe" },
-                    Sector = new Sector { Name = "Home Repair" }
+                    new Tag("Plumbing", "Related to plumbing issues"),
                 },
-                new Task
+                Deadline = DateTime.Now.AddDays(3),
+                Status = TaskStatus.Pending,
+                AssignedTo = new Handyman { Username = "JohnDoe" },
+                Sector = new Sector(1,"Campus Kaai")
+            },
+            new Task
+            {
+                Id = 2,
+                Title = "Paint living room",
+                Description = "Apply two coats of paint to walls.",
+                Photo = null,
+                Tags =  new List<Tag>
                 {
-                    Id = 2,
-                    Title = "Paint living room",
-                    Description = "Apply two coats of paint to walls.",
-                    Photo = null,
-                    Tags = new List<string> { "Painting", "Interior" },
-                    Deadline = null,
-                    Status = TaskStatus.InProgress,
-                    AssignedTo = new Handyman { Name = "Jane Smith" },
-                    Sector = new Sector { Name = "Interior Design" }
-                }
-            };
-        }
+                    new Tag("Plumbing", "Related to plumbing issues"),
+                    new Tag("Electricity", "Needs immediate attention")
+                },
+                Deadline = DateTime.Now.AddDays(7), // Default to a week if null was intended
+                Status = TaskStatus.InProgress,
+                AssignedTo = new Handyman { Username = "JaneSmith" },
+                Sector = new Sector(1,"Campus Kaai")
+            }
+        };
+    }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
