@@ -3,13 +3,13 @@ namespace ClearTask.Models;
 public class Handyman : User
 {
     public List<Tag> Tags { get; set; }
-    public List<Task> AssignedTasks { get; set; }
+    public List<Task_> AssignedTasks { get; set; }
 
     public Handyman()
     {
         UserRole = Role.Handyman; // Set default role
         Tags = new List<Tag>();
-        AssignedTasks = new List<Task>();
+        AssignedTasks = new List<Task_>();
     }
 
     public void AddTag(Tag tag)
@@ -20,7 +20,7 @@ public class Handyman : User
         }
     }
 
-    public void AssignTask(Task task)
+    public void AssignTask(Task_ task)
     {
         AssignedTasks.Add(task);
     }

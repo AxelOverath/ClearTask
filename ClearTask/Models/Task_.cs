@@ -1,6 +1,6 @@
 namespace ClearTask.Models
 {
-    public class Task
+    public class Task_
     {
         public int Id { get; set; }
         public string Title { get; set; }
