@@ -24,9 +24,4 @@ public class Handyman : User
     {
         AssignedTasks.Add(task);
     }
-
-    public void RemoveTask(int taskId)
-    {
-        AssignedTasks.RemoveAll(t => t.Id == taskId);
-    }
 }

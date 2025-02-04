@@ -1,16 +1,21 @@
+using MongoDB.Bson;
+
 namespace ClearTask.Models
 {
     public class Task_
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string? Photo { get; set; }
-        public List<Tag> Tags { get; set; }
-        public DateTime? Deadline { get; set; }
-        public TaskStatus Status { get; set; }
-        public Handyman? AssignedTo { get; set; }
-        public Sector Sector { get; set; }
+        public ObjectId Id { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string? photo { get; set; }
+        public List<ObjectId> tags { get; set; }
+        public List<Tag>? taglist { get; set; }
+        public DateTime? deadline { get; set; }
+        public TaskStatus status { get; set; }
+        public ObjectId assignedTo { get; set; }
+        public Handyman? hassignedTo { get; set; }
+        public ObjectId sector { get; set; }
+        public Sector actualSector { get; set; }
     }
     public enum TaskStatus
     {

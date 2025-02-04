@@ -1,13 +1,11 @@
+using MongoDB.Bson;
+
 namespace ClearTask.Models;
 
 public class Tag
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public ObjectId Id { get; set; }
+    public string name { get; set; }
+    public string description { get; set; }
 
-    public Tag(string name, string description)
-    {
-        Name = name;
-        Description = description;
-    }
 }
