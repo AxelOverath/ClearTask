@@ -12,6 +12,10 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:TaskList}"
         Route="Login" />
+      <ShellSection Title="Gebruikersbeheer">
+        <ShellContent Title="Gebruikers" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
+        <ShellContent Title="Nieuwe gebruiker" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
+    </ShellSection>
     </TabBar>
-
 </Shell>
+
