@@ -10,7 +10,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <ItemGroup>
+
     <MauiXaml Update="Views\pc\AdminPagel.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
@@ -21,6 +25,7 @@
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\pc\UsersPage.xaml">
+
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\TaskList.xaml">

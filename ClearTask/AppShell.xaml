@@ -1,18 +1,20 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:views="clr-namespace:ClearTask.Views.Pc;assembly=ClearTask"
-       x:Class="ClearTask.AppShell">
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ClearTask.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ClearTask.Views"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="False">
 
-    <!-- AppShell content -->
-
-    <!-- Gebruikersbeheer Section -->
-    <ShellSection Title="Gebruikersbeheer">
+    <TabBar Shell.TabBarBackgroundColor="#288d52" Shell.TabBarUnselectedColor="White" Shell.TabBarForegroundColor="Aquamarine" >
+    <ShellContent
+        ContentTemplate="{DataTemplate local:TaskList}"
+        Route="Login" />
+      <ShellSection Title="Gebruikersbeheer">
         <ShellContent Title="Gebruikers" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
         <ShellContent Title="Nieuwe gebruiker" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
     </ShellSection>
-
-    <!-- Add other sections or pages as needed -->
-
+    </TabBar>
 </Shell>
 
