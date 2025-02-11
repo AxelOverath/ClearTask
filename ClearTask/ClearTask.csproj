@@ -41,6 +41,7 @@
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiXaml Include="Views\Pc\UsersPage.xaml" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -64,6 +65,33 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\pc\AdminPagel.xaml.cs">
+	    <DependentUpon>AdminPagel.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\pc\LoginPage.xaml.cs">
+	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\pc\AddUserPage.xaml.cs">
+	    <DependentUpon>AddUserPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\pc\UsersPage.xaml.cs">
+	    <DependentUpon>UsersPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\pc\AdminPagel.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\AddUserPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\UsersPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\TaskList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

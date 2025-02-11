@@ -28,7 +28,7 @@ namespace ClearTask.Data
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
 
-        public static async Task InsertUserAsync(Task_ task)
+        public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);
         }
@@ -74,6 +74,17 @@ namespace ClearTask.Data
             var tags = await tagCollection.Find(t => tagIds.Contains(t.Id)).ToListAsync();
             return tags;
         }
+
+        public static async Task InsertUserAsync(User user)
+        {
+            await userCollection.InsertOneAsync(user);
+        }
+
+        public static async Task<List<User>> GetAllUsersAsync()
+        {
+            return await userCollection.Find(_ => true).ToListAsync();
+        }
+
 
         // Method to populate related data for a task
         public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
