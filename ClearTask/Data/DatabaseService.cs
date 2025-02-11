@@ -32,11 +32,15 @@ namespace ClearTask.Data
         {
             await taskCollection.InsertOneAsync(task);
         }
+        public static IMongoCollection<User> UsersCollection
+        {
+            get { return userCollection; }
+        }
 
         // Fetch Handyman object by ObjectId
         public static async Task<Handyman> GetHandymanById(ObjectId userId)
         {
-            var user = await userCollection.Find(u => u.Id == userId && u.UserRole == Role.Handyman).FirstOrDefaultAsync();
+            var user = await userCollection.Find(u => u.Id == userId && u.userRole == Role.Handyman).FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -48,7 +52,7 @@ namespace ClearTask.Data
             return new Handyman
             {
                 Id = user.Id,
-                Username = user.Username,
+                username = user.username,
                 // Map additional handyman-specific fields if needed
             };
         }

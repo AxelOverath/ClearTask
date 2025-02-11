@@ -3,13 +3,14 @@
     x:Class="ClearTask.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:ClearTask"
-    Shell.FlyoutBehavior="Disabled"
-    Title="ClearTask">
+    xmlns:local="clr-namespace:ClearTask.Views"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="False">
 
+    <TabBar Shell.TabBarBackgroundColor="#288d52" Shell.TabBarUnselectedColor="White" Shell.TabBarForegroundColor="Aquamarine" >
     <ShellContent
-        Title="Home"
         ContentTemplate="{DataTemplate local:TaskList}"
-        Route="MainPage" />
+        Route="Login" />
+    </TabBar>
 
 </Shell>
