@@ -1,8 +1,6 @@
 using ClearTask.Data;
 using ClearTask.Models;
-using Microsoft.Maui.Storage;
 using MongoDB.Bson;
-using System;
 namespace ClearTask.Views.Pc;
 
 
@@ -27,9 +25,9 @@ public partial class AddUserPage : ContentPage
         var newUser = new User
         {
             Id = ObjectId.GenerateNewId(),
-            Username = NameEntry.Text,
-            Email = EmailEntry.Text,
-            UserRole = selectedRole
+            username = NameEntry.Text,
+            email = EmailEntry.Text,
+            userRole = selectedRole
         };
 
         DatabaseService.InsertUserAsync(newUser);

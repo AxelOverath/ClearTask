@@ -29,13 +29,20 @@
 
             <StackLayout Orientation="Horizontal">
                 <Frame ZIndex="1" HasShadow="True" BorderColor="#09272e" MaximumHeightRequest="58" WidthRequest="58" CornerRadius="28">
-                    <Image Source="lock.png" HeightRequest="20" WidthRequest="20"/>
+                    <Image Source="key.png" HeightRequest="20" WidthRequest="20"/>
                 </Frame>
 
                 <Frame Padding="0" Margin="-35,0,0,0" HasShadow="True" BorderColor="White" HorizontalOptions="FillAndExpand">
                     <handlers:Borderless x:Name="passwordInput" VerticalOptions="Center" Margin="40,0,0,0" Placeholder="Password" IsPassword="True" PlaceholderColor="#09272e" TextColor="Black"/>
                 </Frame>
             </StackLayout>
+
+            <!-- Remember Me Checkbox -->
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <CheckBox x:Name="rememberMeCheckbox" Color="#43daff"/>
+                <Label Text="Remember Me" FontSize="16" TextColor="#09272e" VerticalOptions="Center" Margin="5,0,0,0"/>
+            </StackLayout>
+
             <Button Clicked="SignIn" Text="Login" WidthRequest="100" CornerRadius="20" HorizontalOptions="Center" BackgroundColor="#43daff"/>
         </VerticalStackLayout>
     </ScrollView>

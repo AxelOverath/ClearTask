@@ -36,6 +36,10 @@ namespace ClearTask.Data
         {
             get { return userCollection; }
         }
+        public static async Task InsertUserAsync(User user)
+        {
+            await userCollection.InsertOneAsync(user);
+        }
 
         // Fetch Handyman object by ObjectId
         public static async Task<Handyman> GetHandymanById(ObjectId userId)
@@ -79,7 +83,7 @@ namespace ClearTask.Data
             return tags;
         }
 
-        public static async Task InsertUserAsync(User user)
+        public static async Task InsertTaskUserAsync(User user)
         {
             await userCollection.InsertOneAsync(user);
         }
@@ -88,6 +92,7 @@ namespace ClearTask.Data
         {
             return await userCollection.Find(_ => true).ToListAsync();
         }
+
 
 
         // Method to populate related data for a task
