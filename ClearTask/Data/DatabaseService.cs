@@ -28,15 +28,23 @@ namespace ClearTask.Data
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
 
-        public static async Task InsertUserAsync(Task_ task)
+        public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);
+        }
+        public static IMongoCollection<User> UsersCollection
+        {
+            get { return userCollection; }
+        }
+        public static async Task InsertUserAsync(User user)
+        {
+            await userCollection.InsertOneAsync(user);
         }
 
         // Fetch Handyman object by ObjectId
         public static async Task<Handyman> GetHandymanById(ObjectId userId)
         {
-            var user = await userCollection.Find(u => u.Id == userId && u.UserRole == Role.Handyman).FirstOrDefaultAsync();
+            var user = await userCollection.Find(u => u.Id == userId && u.userRole == Role.Handyman).FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -48,7 +56,7 @@ namespace ClearTask.Data
             return new Handyman
             {
                 Id = user.Id,
-                Username = user.Username,
+                username = user.username,
                 // Map additional handyman-specific fields if needed
             };
         }
@@ -74,6 +82,18 @@ namespace ClearTask.Data
             var tags = await tagCollection.Find(t => tagIds.Contains(t.Id)).ToListAsync();
             return tags;
         }
+
+        public static async Task InsertTaskUserAsync(User user)
+        {
+            await userCollection.InsertOneAsync(user);
+        }
+
+        public static async Task<List<User>> GetAllUsersAsync()
+        {
+            return await userCollection.Find(_ => true).ToListAsync();
+        }
+
+
 
         // Method to populate related data for a task
         public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)

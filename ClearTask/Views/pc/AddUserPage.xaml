@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.Pc.AddUserPage"
+             Title="Nieuwe Gebruiker"
+             BackgroundColor="White">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Nieuwe Gebruiker" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        <Entry x:Name="NameEntry" Placeholder="Naam" BackgroundColor="LightGray"/>
+        <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" BackgroundColor="LightGray"/>
+
+        <Picker x:Name="RolePicker" Title="Selecteer Rol" BackgroundColor="LightGray">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Admin</x:String>
+                    <x:String>Manager</x:String>
+                    <x:String>Handyman</x:String>
+                    <x:String>Employee</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Button Text="Toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserConfirm"/>
+    </VerticalStackLayout>
+</ContentPage>

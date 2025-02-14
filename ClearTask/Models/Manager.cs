@@ -4,6 +4,6 @@ public class Manager : User
 {
     public Manager()
     {
-        UserRole = Role.Manager;
+        userRole = Role.Manager;
     }
 }

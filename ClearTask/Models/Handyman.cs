@@ -7,7 +7,7 @@ public class Handyman : User
 
     public Handyman()
     {
-        UserRole = Role.Handyman; // Set default role
+        userRole = Role.Handyman; // Set default role
         Tags = new List<Tag>();
         AssignedTasks = new List<Task_>();
     }
