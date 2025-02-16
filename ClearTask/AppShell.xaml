@@ -5,18 +5,51 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ClearTask.Views"
     xmlns:views="clr-namespace:ClearTask.Views.Pc"
-    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False"
-    BackgroundColor="#f0f8ff">
+    BackgroundColor="#3b82f6">
 
-    <TabBar Shell.TabBarBackgroundColor="#1e5631" Shell.TabBarUnselectedColor="#d1e8e2" Shell.TabBarForegroundColor="#a8ffb2" Shell.TabBarTitleColor="White">
-        <ShellContent
-            ContentTemplate="{DataTemplate local:TaskList}"
-            Route="Login"
-            Title="Tasks"/>
-        <ShellSection Title="User Management">
-            <ShellContent Title="Users" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
-            <ShellContent Title="Add User" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
-        </ShellSection>
-    </TabBar>
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid>
+                <!-- Background for the navigation -->
+                <BoxView BackgroundColor="#3b82f6" HeightRequest="80" VerticalOptions="End" />
+
+                <!-- Tabs -->
+                <HorizontalStackLayout 
+                    HorizontalOptions="Center" 
+                    VerticalOptions="End" 
+                    Spacing="50">
+                    <ImageButton Source="tasks_icon.png" Command="{Binding NavigateToTasks}" />
+                    <ImageButton Source="user_settings_icon.png" Command="{Binding NavigateToSettings}" />
+                </HorizontalStackLayout>
+
+                <!-- Floating Middle Button inside Diamond Shape -->
+                <Frame
+                    CornerRadius="10"
+                    WidthRequest="80"
+                    HeightRequest="80"
+                    BackgroundColor="#3b82f6"
+                    HasShadow="True"
+                    BorderColor="Transparent"
+                    Rotation="45"
+                    AbsoluteLayout.LayoutBounds=".5,1,AutoSize,AutoSize"
+                    AbsoluteLayout.LayoutFlags="PositionProportional">
+                    
+                    <Frame 
+                        CornerRadius="20"
+                        BackgroundColor="#3b82f6"
+                        Padding="0"
+                        HasShadow="False"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <ImageButton
+                            Source="add_task_icon.png"
+                            Command="{Binding NavigateToAddTask}"
+                            Rotation="-45" />
+                    </Frame>
+                </Frame>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
 </Shell>

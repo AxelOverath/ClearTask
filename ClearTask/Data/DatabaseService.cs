@@ -32,6 +32,7 @@ namespace ClearTask.Data
         {
             await taskCollection.InsertOneAsync(task);
         }
+
         public static IMongoCollection<User> UsersCollection
         {
             get { return userCollection; }
@@ -93,10 +94,8 @@ namespace ClearTask.Data
             return await userCollection.Find(_ => true).ToListAsync();
         }
 
-
-
         // Method to populate related data for a task
-        public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
+        public static async Task<Task_> GetTaskWithDetails(ObjectId? taskId)
         {
             // Fetch the Task
             var task = await taskCollection.Find(t => t.Id == taskId).FirstOrDefaultAsync();
@@ -127,9 +126,7 @@ namespace ClearTask.Data
 
                     Console.WriteLine($"Retrieved {task.taglist.Count} tags for Task {task.Id}"); // Debugging
                 }
-
             }
-
             return task;
         }
     }

@@ -32,7 +32,7 @@ public partial class AddUserPage : ContentPage
 
         DatabaseService.InsertUserAsync(newUser);
         await DisplayAlert("Succes", "Gebruiker toegevoegd!", "OK");
-        await Shell.Current.GoToAsync("users");
+       // await Shell.Current.GoToAsync("users");
     }
 }
 

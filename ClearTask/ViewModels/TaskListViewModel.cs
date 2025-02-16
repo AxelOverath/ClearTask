@@ -71,6 +71,16 @@ public class TaskListViewModel : INotifyPropertyChanged
         }
     }
 
-
-
+    public async Task AddTask(Task_ newTask)
+    {
+        try
+        {
+            await DatabaseService.InsertTaskAsync(newTask);
+            Tasks.Add(newTask);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding task: {ex.Message}");
+        }
+    }
 }
