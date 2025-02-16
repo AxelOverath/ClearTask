@@ -27,9 +27,9 @@ public partial class AddUserPage : ContentPage
         var newUser = new User
         {
             Id = ObjectId.GenerateNewId(),
-            Username = NameEntry.Text,
-            Email = EmailEntry.Text,
-            UserRole = selectedRole
+            username = NameEntry.Text,
+            email = EmailEntry.Text,
+            userRole = selectedRole
         };
 
         DatabaseService.InsertUserAsync(newUser);

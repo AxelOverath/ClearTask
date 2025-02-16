@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using ClearTask.Models;
 using ClearTask.Data;
+using ClearTask.Views.Pc;
 
 namespace ClearTask.Views;
 public partial class Login : ContentPage
@@ -40,7 +41,14 @@ public partial class Login : ContentPage
                 UserStorage.Password = existingUser.password;
                 UserStorage.UserRole = existingUser.userRole;
 
-                await Navigation.PushAsync(new TaskList());
+                if (existingUser.userRole == Role.Admin)
+                {
+                    await Navigation.PushAsync(new UsersPage());
+                }
+                else
+                {
+                    await Navigation.PushAsync(new TaskList());
+                }
             }
             else
             {

@@ -75,6 +75,9 @@
 	  <Compile Update="Views\pc\AddUserPage.xaml.cs">
 	    <DependentUpon>AddUserPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\pc\EditUserPage.xaml.cs">
+	    <DependentUpon>EditUserPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\pc\UsersPage.xaml.cs">
 	    <DependentUpon>UsersPage.xaml</DependentUpon>
 	  </Compile>
@@ -88,6 +91,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\AddUserPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\EditUserPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\UsersPage.xaml">

@@ -15,8 +15,8 @@ public partial class AppShell : Shell
                 // Routes registreren
                 Routing.RegisterRoute("users", typeof(UsersPage));
                 Routing.RegisterRoute("addUser", typeof(AddUserPage));
-                
-                GoToLogin();
+                Routing.RegisterRoute(nameof(EditUserPage), typeof(EditUserPage));
+            GoToLogin();
             }
             
         public async void GoToLogin()
