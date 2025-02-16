@@ -1,6 +1,5 @@
 using ClearTask.ViewModels;
-
-namespace ClearTask;
+namespace ClearTask.Views;
 
 public partial class TaskList : ContentPage
 {

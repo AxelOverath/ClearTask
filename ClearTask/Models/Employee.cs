@@ -3,6 +3,6 @@ public class Employee : User
 {
     public Employee()
     {
-        UserRole = Role.Employee;
+        userRole = Role.Employee;
     }
 }
