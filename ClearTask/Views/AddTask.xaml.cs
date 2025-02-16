@@ -1,8 +1,12 @@
+using System.Runtime.InteropServices;
 using ClearTask.Data;
 using ClearTask.Models;
 using ClearTask.ViewModels;
 using MongoDB.Bson;
 using TaskStatus = ClearTask.Models.TaskStatus;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 
 namespace ClearTask.Views
@@ -48,12 +52,28 @@ namespace ClearTask.Views
         //  Save Task with Image ID
         private async void OnSaveTaskClicked(object sender, EventArgs e)
         {
+            string description = taskdescription.Text;
+            // Fetch the list of generated tags from the API
+            List<string> generatedTags = await GenerateTagsFromAPI(description);
+
+            // Create Tag objects for each generated tag
+            List<Tag> tagList = new List<Tag>();
+            foreach (var tagName in generatedTags)
+            {
+                tagList.Add(new Tag
+                {
+                    Id = ObjectId.GenerateNewId(),
+                    name = tagName,
+                    description = ""
+                });
+            }
+
             var newTask = new Task_
             {
                 title = tasktitle.Text,
-                description = taskdescription.Text,
-                photo = uploadedImageId?.ToString(), // Save Image ID
-                tags = new List<ObjectId>(),
+                description = description,
+                photo = "https://example.com/lucas.jpg", // Save Image ID
+                taglist = tagList,
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
                 assignedTo = ObjectId.Empty,
@@ -63,6 +83,38 @@ namespace ClearTask.Views
             await _viewModel.AddTask(newTask);
             await DisplayAlert("Success", "Task added successfully!", "OK");
             await Navigation.PopAsync();
+        }
+        private async Task<List<string>> GenerateTagsFromAPI(string prompt)
+        {
+            using (var client = new HttpClient())
+            {
+                var requestBody = new { model = "tagger", prompt = prompt };
+                var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+
+                try
+                {
+                    HttpResponseMessage response = await client.PostAsync("http://localhost:11435/api/generate", jsonContent);
+                    response.EnsureSuccessStatusCode(); // Throw an error if response is not 2xx
+
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    using (JsonDocument doc = JsonDocument.Parse(jsonResponse))
+                    {
+                        // Extract the array of tags from the property "generated_tags"
+                        var tagsElement = doc.RootElement.GetProperty("generated_tags");
+                        List<string> tags = new List<string>();
+                        foreach (var element in tagsElement.EnumerateArray())
+                        {
+                            tags.Add(element.GetString() ?? string.Empty);
+                        }
+                        return tags;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", $"Failed to generate tags: {ex.Message}", "OK");
+                    return new List<string> { "DefaultTag" }; // Fallback tag in case of an error
+                }
+            }
         }
 
         //  Back Button
