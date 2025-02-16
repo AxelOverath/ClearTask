@@ -1,6 +1,8 @@
 using MongoDB.Driver;
 using ClearTask.Models;
 using ClearTask.Data;
+using ClearTask.Views.Pc;
+using ClearTask;
 
 namespace ClearTask.Views;
 public partial class Login : ContentPage
@@ -40,7 +42,16 @@ public partial class Login : ContentPage
                 UserStorage.Password = existingUser.password;
                 UserStorage.UserRole = existingUser.userRole;
 
-                await Navigation.PushAsync(new TaskList());
+                if (existingUser.userRole == Role.Admin)
+                {
+
+                    CheckUserAccess();
+                    await Navigation.PushAsync(new UsersPage());
+                }
+                else
+                {
+                    await Navigation.PushAsync(new TaskList());
+                }
             }
             else
             {
@@ -89,5 +100,26 @@ public partial class Login : ContentPage
 
         return userFound;
     }
+
+    private async Task CheckUserAccess()
+    {
+        var currentUser = await DatabaseService.GetCurrentUserAsync();
+
+        // Conditie voor platform en rol
+        bool isPc = DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst;
+        bool isAdmin = currentUser != null && currentUser.userRole == Role.Admin;
+
+        // Wacht op het hoofdthread voor wijzigingen in de UI
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            var adminNavBar = Shell.Current.FindByName<TabBar>("AdminNavBar");
+            if (adminNavBar != null)
+            {
+                // Zorg ervoor dat de TabBar zichtbaar wordt voor admins op pc's
+                adminNavBar.IsVisible = isPc && isAdmin;
+            }
+        });
+    }
+
 
 }

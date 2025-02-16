@@ -2,6 +2,7 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
+using System.Text.Json;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -10,6 +11,9 @@ namespace ClearTask.Data
         private static IMongoCollection<Sector> sectorCollection;
         private static IMongoCollection<CustomTag> tagCollection;
         private static IMongoCollection<User> userCollection;
+        private static CancellationTokenSource _cts = new();
+
+        public static event Action UserUpdated;
 
         static DatabaseService()
         {
@@ -24,6 +28,7 @@ namespace ClearTask.Data
             sectorCollection = db.GetCollection<Sector>("sectors");
             tagCollection = db.GetCollection<CustomTag>("tags");
             userCollection = db.GetCollection<User>("users");
+            StartUserChangedListener();
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
@@ -89,6 +94,12 @@ namespace ClearTask.Data
             return await userCollection.Find(_ => true).ToListAsync();
         }
 
+        public static async Task<User> GetCurrentUserAsync()
+        {
+            return await SecureStorage.GetAsync("currentUser") is string userData
+                ? JsonSerializer.Deserialize<User>(userData)
+                : null;
+        }
 
         // Method to populate related data for a task
         public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
@@ -126,6 +137,50 @@ namespace ClearTask.Data
             }
 
             return task;
+        }
+
+    private static async void StartUserChangedListener()
+    {
+        Console.WriteLine("Listening for task changes...");
+
+        var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<User>>()
+            .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                            change.OperationType == ChangeStreamOperationType.Update ||
+                            change.OperationType == ChangeStreamOperationType.Delete);
+
+        var cursor = await userCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                while (await cursor.MoveNextAsync(_cts.Token))
+                {
+                    foreach (var change in cursor.Current)
+                    {
+                        Console.WriteLine($"Database change detected: {change.OperationType}");
+                        UserUpdated?.Invoke();
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("Change stream listening stopped.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in change stream listener: {ex.Message}");
+            }
+        });
+        }
+        public static void StopListening()
+        {
+            _cts.Cancel();
+        }
+
+        public static void TriggerUserUpdatedEvent()
+        {
+            UserUpdated?.Invoke();
         }
     }
 }

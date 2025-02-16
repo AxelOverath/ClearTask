@@ -8,10 +8,17 @@
     <VerticalStackLayout Padding="20">
         <Label Text="Nieuwe Gebruiker" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
 
-        <Entry x:Name="NameEntry" Placeholder="Naam" BackgroundColor="LightGray"/>
-        <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" BackgroundColor="LightGray"/>
+        <!-- Naam -->
+        <Entry x:Name="NameEntry" Placeholder="Naam" />
 
-        <Picker x:Name="RolePicker" Title="Selecteer Rol" BackgroundColor="LightGray">
+        <!-- E-mail -->
+        <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" />
+
+        <!-- Wachtwoord -->
+        <Entry x:Name="PasswordEntry" Placeholder="Wachtwoord" IsPassword="True" />
+
+        <!-- Rol -->
+        <Picker x:Name="RolePicker" Title="Selecteer Rol" >
             <Picker.ItemsSource>
                 <x:Array Type="{x:Type x:String}">
                     <x:String>Admin</x:String>
@@ -22,6 +29,8 @@
             </Picker.ItemsSource>
         </Picker>
 
+        <!-- Toevoegen knop -->
         <Button Text="Toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserConfirm"/>
+        <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"/>
     </VerticalStackLayout>
 </ContentPage>
