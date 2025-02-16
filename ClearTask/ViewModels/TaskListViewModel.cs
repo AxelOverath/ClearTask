@@ -1,10 +1,12 @@
-namespace ClearTask.ViewModels;
 using ClearTask.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ClearTask.Models;
+using System.Threading.Tasks;
 using MongoDB.Driver;
+
+namespace ClearTask.ViewModels;
 
 public class TaskListViewModel : INotifyPropertyChanged
 {
@@ -29,6 +31,7 @@ public class TaskListViewModel : INotifyPropertyChanged
     public TaskListViewModel()
     {
         LoadTasks();
+        DatabaseService.TasksUpdated += async () => await LoadTasks(); // **Luisteren naar DB updates**
     }
 
     public async Task LoadTasks()
@@ -36,34 +39,8 @@ public class TaskListViewModel : INotifyPropertyChanged
         try
         {
             var tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
-            Console.WriteLine($"Fetched {tasksFromDb.Count} tasks from DB");
-
-            var detailedTasks = new List<Task_>();
-
-            foreach (var task in tasksFromDb)
-            {
-                try
-                {
-                    Console.WriteLine($"Fetching details for Task ID: {task.Id}");
-
-                    var detailedTask = await DatabaseService.GetTaskWithDetails(task.Id);
-
-                    if (detailedTask != null)
-                    {
-                        detailedTasks.Add(detailedTask);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Task {task.Id} returned null from GetTaskWithDetails()");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error fetching details for Task {task.Id}: {ex.Message}");
-                }
-            }
-
-            Tasks = new ObservableCollection<Task_>(detailedTasks);
+            Tasks = new ObservableCollection<Task_>(tasksFromDb);
+            OnPropertyChanged(nameof(Tasks)); // **Forceer UI update**
         }
         catch (Exception ex)
         {
@@ -76,7 +53,6 @@ public class TaskListViewModel : INotifyPropertyChanged
         try
         {
             await DatabaseService.InsertTaskAsync(newTask);
-            Tasks.Add(newTask);
         }
         catch (Exception ex)
         {

@@ -2,6 +2,7 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
+using ClearTask.ViewModels;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -10,6 +11,9 @@ namespace ClearTask.Data
         private static IMongoCollection<Sector> sectorCollection;
         private static IMongoCollection<CustomTag> tagCollection;
         private static IMongoCollection<User> userCollection;
+        private static CancellationTokenSource _cts = new();
+
+        public static event Action TasksUpdated;
 
         static DatabaseService()
         {
@@ -24,6 +28,8 @@ namespace ClearTask.Data
             sectorCollection = db.GetCollection<Sector>("sectors");
             tagCollection = db.GetCollection<CustomTag>("tags");
             userCollection = db.GetCollection<User>("users");
+
+            StartTaskChangeListener(); // Start Change Stream bij opstarten
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
@@ -128,6 +134,47 @@ namespace ClearTask.Data
                 }
             }
             return task;
+        }
+        private static async void StartTaskChangeListener()
+        {
+            Console.WriteLine("Listening for task changes...");
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Task_>>()
+                .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                                change.OperationType == ChangeStreamOperationType.Update ||
+                                change.OperationType == ChangeStreamOperationType.Delete);
+
+            var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (await cursor.MoveNextAsync(_cts.Token))
+                    {
+                        foreach (var change in cursor.Current)
+                        {
+                            Console.WriteLine($"Database change detected: {change.OperationType}");
+                            TasksUpdated?.Invoke();
+                        }
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Change stream listening stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in change stream listener: {ex.Message}");
+                }
+            });
+        }
+
+
+
+        public static void StopListening()
+        {
+            _cts.Cancel();
         }
     }
 }

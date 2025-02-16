@@ -23,10 +23,12 @@ public partial class AddTask : ContentPage
             title = tasktitle.Text,
             description = taskdescription.Text,
             photo = "https://example.com/walls.jpg",
-            // tags = new List<ObjectId>(),
+            tags = new List<ObjectId>(),
             deadline = DeadlinePicker.Date,
             status = TaskStatus.Pending, // Default status
-            
+            assignedTo = ObjectId.Empty, // No one assigned by default
+            sector = ObjectId.Empty // No sector assigned by default
+
         };
 
         await _viewModel.AddTask(newTask);

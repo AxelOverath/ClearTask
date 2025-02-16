@@ -13,8 +13,8 @@ public partial class AppShell : Shell
                 InitializeComponent();
 
                 // Routes registreren
-               // Routing.RegisterRoute("users", typeof(UsersPage));
-               // Routing.RegisterRoute("addUser", typeof(AddUserPage));
+               Routing.RegisterRoute("users", typeof(UsersPage));
+               Routing.RegisterRoute("addUser", typeof(AddUserPage));
                 
                 GoToLogin();
             }
