@@ -99,30 +99,44 @@ namespace ClearTask.Views
 
                     string jsonResponse = await response.Content.ReadAsStringAsync();
 
-                    // Use regex to extract all "response" values
-                    Regex regex = new Regex("\"response\"\\s*:\\s*\"(.*?)\"");
-                    MatchCollection matches = regex.Matches(jsonResponse);
-                    List<string> tags = new List<string>();
-
-                    foreach (Match match in matches)
+                    // Use JSON parsing instead of regex
+                    using (JsonDocument doc = JsonDocument.Parse(jsonResponse))
                     {
-                        string tag = match.Groups[1].Value.Trim();
-                        if (!string.IsNullOrEmpty(tag))
+                        var root = doc.RootElement;
+                        List<string> tags = new List<string>();
+
+                        // Check if the response contains the "response" field
+                        if (root.TryGetProperty("response", out JsonElement responseElement))
                         {
-                            tags.Add(tag);
+                            // Split the response into tags (assuming it's a comma-separated list or multiple lines)
+                            var responseString = responseElement.GetString();
+                            var extractedTags = responseString?.Split(new[] { '\n', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            if (extractedTags != null)
+                            {
+                                foreach (var tag in extractedTags)
+                                {
+                                    string cleanedTag = tag.Trim();
+                                    if (!string.IsNullOrEmpty(cleanedTag))
+                                    {
+                                        tags.Add(cleanedTag);
+                                    }
+                                }
+                            }
                         }
-                    }
 
-                    // If no tags were found, fallback to a default tag
-                    if (tags.Count == 0)
-                    {
-                        tags.Add("DefaultTag");
-                    }
+                        // If no tags were found, fallback to a default tag
+                        if (tags.Count == 0)
+                        {
+                            tags.Add("DefaultTag");
+                        }
 
-                    return tags;
+                        return tags;
+                    }
                 }
                 catch (Exception ex)
                 {
+                    // Assuming DisplayAlert is defined in your environment (e.g., Xamarin.Forms, MAUI, etc.)
                     await DisplayAlert("Error", $"Failed to generate tags: {ex.Message}", "OK");
                     return new List<string> { "DefaultTag" }; // Fallback tag in case of an error
                 }
