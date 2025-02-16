@@ -20,13 +20,22 @@
 
         <!-- Rol -->
         <Picker x:Name="RolePicker" Title="Rol"
-        SelectedItem="{Binding userRole}">
+                SelectedItem="{Binding userRole}">
         </Picker>
 
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <!-- Opslaan knop -->
+            <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
 
+            <!-- Terug knop -->
+            <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
 
-        <!-- Opslaan knop -->
-        <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"/>
+            <!-- Verwijder knop -->
+            <Button Text="Verwijderen" Clicked="OnDeleteClicked" BackgroundColor="Red" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+        </HorizontalStackLayout>
+
     </VerticalStackLayout>
 </ContentPage>
-

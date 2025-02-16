@@ -2,6 +2,7 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
+using System.Text.Json;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -93,6 +94,12 @@ namespace ClearTask.Data
             return await userCollection.Find(_ => true).ToListAsync();
         }
 
+        public static async Task<User> GetCurrentUserAsync()
+        {
+            return await SecureStorage.GetAsync("currentUser") is string userData
+                ? JsonSerializer.Deserialize<User>(userData)
+                : null;
+        }
 
         // Method to populate related data for a task
         public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
@@ -171,6 +178,9 @@ namespace ClearTask.Data
             _cts.Cancel();
         }
 
-        
+        public static void TriggerUserUpdatedEvent()
+        {
+            UserUpdated?.Invoke();
+        }
     }
 }

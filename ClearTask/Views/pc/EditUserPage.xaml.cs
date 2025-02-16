@@ -70,13 +70,34 @@ public partial class EditUserPage : ContentPage
             // Update de gebruiker in de database
             await DatabaseService.UsersCollection.ReplaceOneAsync(u => u.Id == CurrentUser.Id, CurrentUser);
 
-            
+            DatabaseService.TriggerUserUpdatedEvent();
 
             // Ga terug naar de vorige pagina
             await Shell.Current.GoToAsync("..");
         }
-    }
 
+    }
+    public async void OnBackClicked(object sender, EventArgs e)
+    {
+        // Navigate back to the UsersPage
+        await Shell.Current.GoToAsync("..");
+    }
+    public async void OnDeleteClicked(object sender, EventArgs e)
+    {
+        if (CurrentUser != null)
+        {
+            var confirmation = await DisplayAlert("Bevestigen", "Weet je zeker dat je deze gebruiker wilt verwijderen?", "Ja", "Nee");
+
+            if (confirmation)
+            {
+                await DatabaseService.UsersCollection.DeleteOneAsync(u => u.Id == CurrentUser.Id);
+
+                await DisplayAlert("Succes", "Gebruiker verwijderd.", "OK");
+
+                await Shell.Current.GoToAsync("..");
+            }
+        }
+    }
 
 
 }
