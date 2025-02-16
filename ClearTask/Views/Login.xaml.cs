@@ -46,7 +46,7 @@ public partial class Login : ContentPage
                 {
 
                     CheckUserAccess();
-                    await Navigation.PushAsync(new UsersPage());
+                    await Navigation.PushAsync(new SectorsOverviewPage());
                 }
                 else
                 {

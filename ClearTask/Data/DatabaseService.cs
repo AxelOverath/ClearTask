@@ -14,6 +14,7 @@ namespace ClearTask.Data
         private static CancellationTokenSource _cts = new();
 
         public static event Action UserUpdated;
+        public static event Action SectorUpdated;
 
         static DatabaseService()
         {
@@ -40,6 +41,10 @@ namespace ClearTask.Data
         public static IMongoCollection<User> UsersCollection
         {
             get { return userCollection; }
+        }
+        public static IMongoCollection<Sector> SectorsCollection
+        {
+            get { return sectorCollection; }
         }
 
         // Fetch Handyman object by ObjectId
@@ -181,6 +186,11 @@ namespace ClearTask.Data
         public static void TriggerUserUpdatedEvent()
         {
             UserUpdated?.Invoke();
+        }
+
+        public static void TriggerSectorUpdatedEvent()
+        {
+            SectorUpdated?.Invoke();
         }
     }
 }
