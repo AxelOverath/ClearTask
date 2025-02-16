@@ -7,6 +7,7 @@ using TaskStatus = ClearTask.Models.TaskStatus;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 
 namespace ClearTask.Views
@@ -97,17 +98,28 @@ namespace ClearTask.Views
                     response.EnsureSuccessStatusCode(); // Throw an error if response is not 2xx
 
                     string jsonResponse = await response.Content.ReadAsStringAsync();
-                    using (JsonDocument doc = JsonDocument.Parse(jsonResponse))
+
+                    // Use regex to extract all "response" values
+                    Regex regex = new Regex("\"response\"\\s*:\\s*\"(.*?)\"");
+                    MatchCollection matches = regex.Matches(jsonResponse);
+                    List<string> tags = new List<string>();
+
+                    foreach (Match match in matches)
                     {
-                        // Extract the array of tags from the property "generated_tags"
-                        var tagsElement = doc.RootElement.GetProperty("generated_tags");
-                        List<string> tags = new List<string>();
-                        foreach (var element in tagsElement.EnumerateArray())
+                        string tag = match.Groups[1].Value.Trim();
+                        if (!string.IsNullOrEmpty(tag))
                         {
-                            tags.Add(element.GetString() ?? string.Empty);
+                            tags.Add(tag);
                         }
-                        return tags;
                     }
+
+                    // If no tags were found, fallback to a default tag
+                    if (tags.Count == 0)
+                    {
+                        tags.Add("DefaultTag");
+                    }
+
+                    return tags;
                 }
                 catch (Exception ex)
                 {
