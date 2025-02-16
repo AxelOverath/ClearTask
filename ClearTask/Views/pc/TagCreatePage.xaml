@@ -1,0 +1,18 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.Pc.TagCreatePage"
+             Title="Create Tag">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Create New Tag" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        <!-- Tag Name -->
+        <Entry x:Name="nameEntry" Placeholder="Tag Name" />
+
+        <!-- Description -->
+        <Entry x:Name="descriptionEntry" Placeholder="Description" />
+
+        <!-- Save Button -->
+        <Button Text="Save" BackgroundColor="Green" TextColor="White" Clicked="OnSaveClicked"/>
+    </VerticalStackLayout>
+</ContentPage>

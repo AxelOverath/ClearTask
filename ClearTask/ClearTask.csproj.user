@@ -26,6 +26,15 @@
     <MauiXaml Update="Views\pc\EditUserPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
+    <MauiXaml Update="Views\pc\TagEditPage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
+    <MauiXaml Update="Views\pc\TagCreatePage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
+    <MauiXaml Update="Views\pc\TagOverviewPage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
     <MauiXaml Update="Views\pc\UsersPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>

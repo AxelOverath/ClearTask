@@ -14,6 +14,7 @@ namespace ClearTask.Data
         private static CancellationTokenSource _cts = new();
 
         public static event Action UserUpdated;
+        public static event Action TagUpdated;
 
         static DatabaseService()
         {
@@ -32,7 +33,7 @@ namespace ClearTask.Data
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
-
+        public static IMongoCollection<CustomTag> TagCollection => tagCollection;
         public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);
@@ -181,6 +182,34 @@ namespace ClearTask.Data
         public static void TriggerUserUpdatedEvent()
         {
             UserUpdated?.Invoke();
+        }
+        public static async Task<List<CustomTag>> GetTagsAsync()
+        {
+            return await tagCollection.Find(new BsonDocument()).ToListAsync();
+        }
+
+        public static async Task<CustomTag> GetTagByIdAsync(ObjectId id)
+        {
+            return await tagCollection.Find(tag => tag.Id == id).FirstOrDefaultAsync();
+        }
+
+        public static async Task SaveTagAsync(CustomTag tag)
+        {
+            await tagCollection.InsertOneAsync(tag);
+        }
+
+        public static async Task UpdateTagAsync(CustomTag tag)
+        {
+            await tagCollection.ReplaceOneAsync(t => t.Id == tag.Id, tag);
+        }
+
+        public static async Task DeleteTagAsync(ObjectId id)
+        {
+            await tagCollection.DeleteOneAsync(t => t.Id == id);
+        }
+        public static void TriggerTagUpdatedEvent()
+        {
+            TagUpdated?.Invoke();
         }
     }
 }

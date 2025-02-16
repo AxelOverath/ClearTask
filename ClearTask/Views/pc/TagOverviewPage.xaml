@@ -1,0 +1,34 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClearTask.Views.Pc"
+             x:Class="ClearTask.Views.Pc.TagOverviewPage"
+             Title="Tags">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Tags Overview" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        <!-- List of tags -->
+        <CollectionView ItemsSource="{Binding Tags}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" BackgroundColor="MediumSeaGreen" CornerRadius="10" Margin="5" HasShadow="True">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:TagOverviewPage}}, Path=BindingContext.OnTagSelectedCommand}"
+                          CommandParameter="{Binding}" />
+                        </Frame.GestureRecognizers>
+
+
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="{Binding name}" FontSize="16" TextColor="White" HorizontalOptions="Center"/>
+                            <Label Text="{Binding description}" FontSize="14" TextColor="LightGray" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <!-- Button to create new tag -->
+        <Button Text="Create New Tag" BackgroundColor="Green" TextColor="White" Clicked="OnCreateNewTagClicked"/>
+    </VerticalStackLayout>
+</ContentPage>

@@ -12,28 +12,11 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:TaskList}"
         Route="Login" />
-
+      <ShellSection Title="Gebruikersbeheer">
+        <ShellContent Title="Gebruikers" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
+        <ShellContent Title="Nieuwe gebruiker" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
+            
+        </ShellSection>
     </TabBar>
-
-    <!-- Admin navigatiebalk -->
-    <TabBar x:Name="AdminNavBar" IsVisible="False">
-        <Tab Title="Gebruikers" Icon="users.png">
-            <ShellContent ContentTemplate="{DataTemplate views:UsersPage}" />
-
-        </Tab>
-<!--
-        <Tab Title="Tags" Icon="tags.png">
-            <ShellContent ContentTemplate="{DataTemplate local:TagsPage}" />
-        </Tab>
-
-        <Tab Title="Sectoren" Icon="sector.png">
-            <ShellContent ContentTemplate="{DataTemplate local:SectorsPage}" />
-        </Tab>
-
-        <Tab Title="Taken" Icon="tasks.png">
-            <ShellContent ContentTemplate="{DataTemplate local:TasksPage}" />
-        </Tab> -->
-    </TabBar>
-
 </Shell>
 
