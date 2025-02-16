@@ -25,45 +25,27 @@ public partial class Login : ContentPage
 
         var existingUser = await CheckIfUserExists(identifier);
 
-        if (existingUser != null)
+        if (existingUser != null && BCrypt.Net.BCrypt.Verify(password, existingUser.password))
         {
-            Console.WriteLine($"User found: {existingUser.username}");
-            Console.WriteLine($"Entered Password: {password}");
-            Console.WriteLine($"Stored Hashed Password: {existingUser.password}");
+            UserStorage.Username = existingUser.username;
+            UserStorage.Email = existingUser.email;
+            UserStorage.Password = existingUser.password;
+            UserStorage.UserRole = existingUser.userRole;
 
-            if (BCrypt.Net.BCrypt.Verify(password, existingUser.password))
-            {
-                Console.WriteLine("Password verification successful");
+            Console.WriteLine("Login succesvol!");
 
-                // Store user information in UserStorage
-                UserStorage.Username = existingUser.username;
-                UserStorage.Email = existingUser.email;
-                UserStorage.Password = existingUser.password;
-                UserStorage.UserRole = existingUser.userRole;
+            // Roep SetupTabs aan om de TabBar dynamisch te genereren
+            (Application.Current.MainPage as AppShell)?.SetupTabs();
 
-                if (existingUser.userRole == Role.Admin)
-                {
-
-                    await Navigation.PushAsync(new UsersPage());
-
-                }
-                else
-                {
-                    await Navigation.PushAsync(new TaskList());
-                }
-            }
-            else
-            {
-                Console.WriteLine("Password verification failed");
-                await DisplayAlert("Error", "Email or password is incorrect", "OK");
-            }
+            // Ga naar de juiste pagina
+            await Shell.Current.GoToAsync("//tasks");
         }
         else
         {
-            Console.WriteLine("No user found with this email/username");
-            await DisplayAlert("Error", "No user found with this email/username.", "OK");
+            await DisplayAlert("Error", "Email or password is incorrect", "OK");
         }
     }
+
 
 
     private async Task<User> CheckIfUserExists(string identifier)

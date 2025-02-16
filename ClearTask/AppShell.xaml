@@ -8,15 +8,7 @@
     Shell.FlyoutBehavior="Flyout"
     Shell.NavBarIsVisible="False">
 
-    <TabBar Shell.TabBarBackgroundColor="#288d52" Shell.TabBarUnselectedColor="White" Shell.TabBarForegroundColor="Aquamarine" >
-    <ShellContent
-        ContentTemplate="{DataTemplate local:TaskList}"
-        Route="Login" />
-      <ShellSection Title="Gebruikersbeheer">
-        <ShellContent Title="Gebruikers" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
-        <ShellContent Title="Nieuwe gebruiker" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
-            
-        </ShellSection>
-    </TabBar>
+    <ShellContent Route="Login" ContentTemplate="{DataTemplate local:Login}" />
+
 </Shell>
 
