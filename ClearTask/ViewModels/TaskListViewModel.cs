@@ -39,14 +39,34 @@ public class TaskListViewModel : INotifyPropertyChanged
         try
         {
             var tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
-            Tasks = new ObservableCollection<Task_>(tasksFromDb);
-            OnPropertyChanged(nameof(Tasks)); // **Forceer UI update**
+
+            var detailedTasks = new List<Task_>();
+
+            foreach (var task in tasksFromDb)
+            {
+                try
+                {
+                    var detailedTask = await DatabaseService.GetTaskWithDetails(task.Id);
+
+                    if (detailedTask != null)
+                    {
+                        detailedTasks.Add(detailedTask);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching details for Task {task.Id}: {ex.Message}");
+                }
+            }
+
+            Tasks = new ObservableCollection<Task_>(detailedTasks);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading tasks: {ex.Message}");
         }
     }
+
 
     public async Task AddTask(Task_ newTask)
     {

@@ -15,6 +15,9 @@
                 <Editor x:Name="taskdescription" Placeholder="Task Description" FontSize="16" HeightRequest="100" />
 
                 <DatePicker x:Name="DeadlinePicker" />
+                <Button Text="Pick Image" Clicked="OnPickImageClicked"/>
+                <Image x:Name="taskImage" HeightRequest="150" WidthRequest="150"/>
+
 
                 <Button Text="Save Task" FontSize="18" Padding="10" BackgroundColor="Green" TextColor="White" Clicked="OnSaveTaskClicked" />
             </StackLayout>

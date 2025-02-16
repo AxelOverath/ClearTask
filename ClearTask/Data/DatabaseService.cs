@@ -2,7 +2,7 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
-using ClearTask.ViewModels;
+using MongoDB.Driver.GridFS;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -12,6 +12,7 @@ namespace ClearTask.Data
         private static IMongoCollection<CustomTag> tagCollection;
         private static IMongoCollection<User> userCollection;
         private static CancellationTokenSource _cts = new();
+        private static GridFSBucket gridFS;
 
         public static event Action TasksUpdated;
 
@@ -23,6 +24,7 @@ namespace ClearTask.Data
             string databaseName = "mongodbVSCodePlaygroundDB";
             var client = new MongoClient(settings);
             var db = client.GetDatabase(databaseName);
+            gridFS = new GridFSBucket(db);
 
             taskCollection = db.GetCollection<Task_>("tasks");
             sectorCollection = db.GetCollection<Sector>("sectors");
