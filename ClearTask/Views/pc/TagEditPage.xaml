@@ -1,0 +1,31 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.Pc.TagEditPage"
+             Title="Edit Tag">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Edit Tag" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        
+        <!-- Tag Name -->
+        <Entry x:Name="nameEntry" Placeholder="Tag Name" Text="{Binding name}" />
+
+        <!-- Description -->
+        <Entry x:Name="descriptionEntry" Placeholder="Description" Text="{Binding description}" />
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <!-- Opslaan knop -->
+            <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+
+            <!-- Terug knop -->
+            <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+
+            <!-- Verwijder knop -->
+            <Button Text="Verwijderen" Clicked="OnDeleteClicked" BackgroundColor="Red" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>
+

@@ -1,5 +1,5 @@
 using MongoDB.Bson;
-
+using MongoDB.Bson.Serialization.Attributes;
 namespace ClearTask.Models;
 
 public class User
@@ -9,6 +9,7 @@ public class User
         public string username { get; set; }
         public string password { get; set; }
         public string email { get; set; }
+        [BsonRepresentation(BsonType.String)]
         public Role userRole { get; set; }
 
 }

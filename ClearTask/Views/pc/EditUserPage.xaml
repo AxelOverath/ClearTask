@@ -1,0 +1,41 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.Pc.EditUserPage"
+             Title="Gebruiker Bewerken">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Gebruiker Bewerken" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        <!-- ID weergave (alleen lezen) -->
+        <Label Text="{Binding Id}" FontSize="12" TextColor="Gray" />
+
+        <!-- Gebruikersnaam -->
+        <Entry Text="{Binding username}" Placeholder="Gebruikersnaam" />
+
+        <!-- E-mail -->
+        <Entry Text="{Binding email}" Placeholder="E-mail" Keyboard="Email"/>
+
+        <!-- Wachtwoord -->
+        <Entry Text="{Binding password}" Placeholder="Wachtwoord" IsPassword="True"/>
+
+        <!-- Rol -->
+        <Picker x:Name="RolePicker" Title="Rol"
+                SelectedItem="{Binding userRole}">
+        </Picker>
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <!-- Opslaan knop -->
+            <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+
+            <!-- Terug knop -->
+            <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+
+            <!-- Verwijder knop -->
+            <Button Text="Verwijderen" Clicked="OnDeleteClicked" BackgroundColor="Red" TextColor="White"
+            CornerRadius="10" Padding="10" WidthRequest="100"/>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>
