@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-
 namespace ClearTask.Views
 {
     public partial class AddTask : ContentPage
@@ -39,6 +38,7 @@ namespace ClearTask.Views
                 {
                     using (var stream = await result.OpenReadAsync())
                     {
+                        // Upload logic if needed
                     }
 
                     await DisplayAlert("Success", "Image uploaded successfully!", "OK");
@@ -54,27 +54,25 @@ namespace ClearTask.Views
         private async void OnSaveTaskClicked(object sender, EventArgs e)
         {
             string description = taskdescription.Text;
-            // Fetch the list of generated tags from the API
-            List<string> generatedTags = await GenerateTagsFromAPI(description);
 
-            // Create Tag objects for each generated tag
-            List<Tag> tagList = new List<Tag>();
-            foreach (var tagName in generatedTags)
+            // Fetch the list of generated tags from the API
+            List<string> generatedTags = await GenerateTagsFromAPI(description) ?? new List<string>();
+
+            // Create a list of Tag objects from the generated tag names
+            List<Tag> tagList = generatedTags.Select(tagName => new Tag
             {
-                tagList.Add(new Tag
-                {
-                    Id = ObjectId.GenerateNewId(),
-                    name = tagName,
-                    description = ""
-                });
-            }
+                Id = ObjectId.GenerateNewId(),
+                name = tagName,
+                description = ""
+            }).ToList();
 
             var newTask = new Task_
             {
                 title = tasktitle.Text,
                 description = description,
-                photo = "https://example.com/lucas.jpg", // Save Image ID
-                taglist = tagList,
+                photo = "https://example.com/lucas.jpg", // Save Image ID if needed
+                tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
+                taglist = tagList,  // Assign the generated tag list
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
                 assignedTo = ObjectId.Empty,
@@ -85,63 +83,87 @@ namespace ClearTask.Views
             await DisplayAlert("Success", "Task added successfully!", "OK");
             await Navigation.PopAsync();
         }
+
+
         private async Task<List<string>> GenerateTagsFromAPI(string prompt)
         {
+            var enhancedPrompt = prompt + "\nReturn as JSON.";
+
             using (var client = new HttpClient())
             {
-                var requestBody = new { model = "tagger", prompt = prompt };
+                var requestBody = new
+                {
+                    model = "tagger",
+                    prompt = enhancedPrompt,
+                    stream = false,
+                    options = new { temperature = 0 },
+                    format = new
+                    {
+                        type = "object",
+                        properties = new
+                        {
+                            generated_tags = new
+                            {
+                                type = "array",
+                                items = new { type = "string" }
+                            }
+                        },
+                        required = new[] { "generated_tags" }
+                    }
+                };
+
                 var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
                 try
                 {
-                    HttpResponseMessage response = await client.PostAsync("http://localhost:11435/api/generate", jsonContent);
-                    response.EnsureSuccessStatusCode(); // Throw an error if response is not 2xx
+                    Console.WriteLine("Sending API request...");
+                    Console.WriteLine($"Request Body: {JsonSerializer.Serialize(requestBody)}");
 
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    HttpResponseMessage response = await client.PostAsync("http://10.0.2.2:11435/api/generate", jsonContent);
+                    response.EnsureSuccessStatusCode();
 
-                    // Use JSON parsing instead of regex
-                    using (JsonDocument doc = JsonDocument.Parse(jsonResponse))
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"API Response: {responseContent}");
+
+                    var finalResponse = JsonSerializer.Deserialize<JsonElement>(responseContent);
+
+                    // Extract the "response" field (which is itself a JSON string)
+                    if (finalResponse.TryGetProperty("response", out var responseElement))
                     {
-                        var root = doc.RootElement;
-                        List<string> tags = new List<string>();
+                        string responseJson = responseElement.GetString();
+                        Console.WriteLine($"Extracted Inner JSON: {responseJson}");
 
-                        // Check if the response contains the "response" field
-                        if (root.TryGetProperty("response", out JsonElement responseElement))
+                        // Deserialize the inner JSON string
+                        var innerResponse = JsonSerializer.Deserialize<JsonElement>(responseJson);
+
+                        if (innerResponse.TryGetProperty("generated_tags", out var tagsElement))
                         {
-                            // Split the response into tags (assuming it's a comma-separated list or multiple lines)
-                            var responseString = responseElement.GetString();
-                            var extractedTags = responseString?.Split(new[] { '\n', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            if (extractedTags != null)
+                            List<string> tags = new List<string>();
+                            foreach (var item in tagsElement.EnumerateArray())
                             {
-                                foreach (var tag in extractedTags)
-                                {
-                                    string cleanedTag = tag.Trim();
-                                    if (!string.IsNullOrEmpty(cleanedTag))
-                                    {
-                                        tags.Add(cleanedTag);
-                                    }
-                                }
+                                tags.Add(item.GetString());
                             }
-                        }
 
-                        // If no tags were found, fallback to a default tag
-                        if (tags.Count == 0)
-                        {
-                            tags.Add("DefaultTag");
-                        }
+                            Console.WriteLine("Extracted Tags:");
+                            tags.ForEach(tag => Console.WriteLine($"- {tag}"));
 
-                        return tags;
+                            return tags;
+                        }
                     }
+
+                    Console.WriteLine("Property 'generated_tags' not found in extracted JSON.");
+                    return new List<string> { "DefaultTag" };
                 }
                 catch (Exception ex)
                 {
-                    // Assuming DisplayAlert is defined in your environment (e.g., Xamarin.Forms, MAUI, etc.)
+                    Console.WriteLine($"API Error: {ex.Message}");
                     await DisplayAlert("Error", $"Failed to generate tags: {ex.Message}", "OK");
-                    return new List<string> { "DefaultTag" }; // Fallback tag in case of an error
+                    return new List<string> { "DefaultTag" };
                 }
             }
         }
+
+
 
         //  Back Button
         private async void OnBackButtonClicked(object sender, EventArgs e)
