@@ -50,7 +50,7 @@ namespace ClearTask
             tabBar.Items.Add(taskTab);
 
             // Extra tabs voor beheerders
-            if (UserStorage.UserRole == Role.Admin)
+            if (UserStorage.UserRole == Role.Admin && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
             {
                 var adminSection = new ShellSection { Title = "Beheer" };
 
