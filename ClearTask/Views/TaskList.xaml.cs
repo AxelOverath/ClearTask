@@ -8,4 +8,8 @@ public partial class TaskList : ContentPage
         InitializeComponent();
         BindingContext = new TaskListViewModel();
     }
+    private async void NavigateToAddTaskPage(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AddTask());
+    }
 }

@@ -48,6 +48,11 @@
                     </StackLayout>
                 </ScrollView>
             </StackLayout>
+
+            <!-- Add Button at Bottom Center -->
+            <Grid VerticalOptions="End" HorizontalOptions="Center" Padding="10">
+                <Button Text="Add" FontSize="18" Padding="10" BackgroundColor="DodgerBlue" TextColor="White" Clicked="NavigateToAddTaskPage" />
+            </Grid>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

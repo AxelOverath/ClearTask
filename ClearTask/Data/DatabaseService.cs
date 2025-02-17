@@ -2,7 +2,9 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
+using MongoDB.Driver.GridFS;
 using System.Text.Json;
+
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -13,8 +15,12 @@ namespace ClearTask.Data
         private static IMongoCollection<User> userCollection;
         private static CancellationTokenSource _cts = new();
 
+        private static GridFSBucket gridFS;
+
+        public static event Action TasksUpdated;
         public static event Action UserUpdated;
         public static event Action TagUpdated;
+
 
         static DatabaseService()
         {
@@ -24,12 +30,17 @@ namespace ClearTask.Data
             string databaseName = "mongodbVSCodePlaygroundDB";
             var client = new MongoClient(settings);
             var db = client.GetDatabase(databaseName);
+            gridFS = new GridFSBucket(db);
 
             taskCollection = db.GetCollection<Task_>("tasks");
             sectorCollection = db.GetCollection<Sector>("sectors");
             tagCollection = db.GetCollection<CustomTag>("tags");
             userCollection = db.GetCollection<User>("users");
+
+            StartTaskChangeListener(); // Start Change Stream bij opstarten
+
             StartUserChangedListener();
+
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
@@ -38,6 +49,7 @@ namespace ClearTask.Data
         {
             await taskCollection.InsertOneAsync(task);
         }
+
         public static IMongoCollection<User> UsersCollection
         {
             get { return userCollection; }
@@ -106,9 +118,8 @@ namespace ClearTask.Data
                 : null;
         }
 
-
         // Method to populate related data for a task
-        public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
+        public static async Task<Task_> GetTaskWithDetails(ObjectId? taskId)
         {
             // Fetch the Task
             var task = await taskCollection.Find(t => t.Id == taskId).FirstOrDefaultAsync();
@@ -139,11 +150,51 @@ namespace ClearTask.Data
 
                     Console.WriteLine($"Retrieved {task.taglist.Count} tags for Task {task.Id}"); // Debugging
                 }
-
             }
-
             return task;
         }
+
+        private static async void StartTaskChangeListener()
+        {
+            Console.WriteLine("Listening for task changes...");
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Task_>>()
+                .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                                change.OperationType == ChangeStreamOperationType.Update ||
+                                change.OperationType == ChangeStreamOperationType.Delete);
+
+            var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (await cursor.MoveNextAsync(_cts.Token))
+                    {
+                        foreach (var change in cursor.Current)
+                        {
+                            Console.WriteLine($"Database change detected: {change.OperationType}");
+                            TasksUpdated?.Invoke();
+                        }
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Change stream listening stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in change stream listener: {ex.Message}");
+                }
+            });
+        }
+
+
+
+        public static void StopListening()
+        {
+            _cts.Cancel();
+
 
     private static async void StartUserChangedListener()
     {
