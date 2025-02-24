@@ -194,6 +194,7 @@ namespace ClearTask.Data
         public static void StopListening()
         {
             _cts.Cancel();
+        }
 
 
     private static async void StartUserChangedListener()
@@ -229,10 +230,6 @@ namespace ClearTask.Data
                 Console.WriteLine($"Error in change stream listener: {ex.Message}");
             }
         });
-        }
-        public static void StopListening()
-        {
-            _cts.Cancel();
         }
 
         public static void TriggerUserUpdatedEvent()
