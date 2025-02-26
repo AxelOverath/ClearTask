@@ -16,7 +16,7 @@ obj/
 # Ignore package manager files (optional)
 node_modules/
 *.log
-
+appsettings.json
 # Ignore specific file extensions (optional)
 *.user
 *.suo

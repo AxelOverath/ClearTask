@@ -89,6 +89,8 @@ namespace ClearTask.Views
         {
             var enhancedPrompt = prompt + "\nReturn as JSON.";
 
+            string ApiUri = AppConfig.ApiUri;
+
             using (var client = new HttpClient())
             {
                 var requestBody = new
@@ -119,7 +121,7 @@ namespace ClearTask.Views
                     Console.WriteLine("Sending API request...");
                     Console.WriteLine($"Request Body: {JsonSerializer.Serialize(requestBody)}");
 
-                    HttpResponseMessage response = await client.PostAsync("http://10.0.2.2:11435/api/generate", jsonContent);
+                    HttpResponseMessage response = await client.PostAsync($"{ApiUri}/api/generate", jsonContent);
                     response.EnsureSuccessStatusCode();
 
                     string responseContent = await response.Content.ReadAsStringAsync();
