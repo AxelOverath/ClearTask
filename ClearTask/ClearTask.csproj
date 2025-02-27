@@ -43,6 +43,11 @@
 		<Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)update_security_config.ps1" />
 	</Target>
 
+	<Target Name="RestoreNetworkConfig" AfterTargets="Clean">
+		<Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)restore_network_config.ps1" />
+	</Target>
+
+
 
 
 	<ItemGroup>
