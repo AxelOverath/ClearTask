@@ -14,9 +14,13 @@
 
                 <Editor x:Name="taskdescription" Placeholder="Task Description" FontSize="16" HeightRequest="100" />
 
-                <DatePicker x:Name="DeadlinePicker" />
+                <DatePicker x:Name="DeadlinePicker" IsVisible="False" />
+
                 <Button Text="Pick Image" Clicked="OnPickImageClicked"/>
                 <Image x:Name="taskImage" HeightRequest="150" WidthRequest="150"/>
+
+                <CheckBox x:Name="AdminTicketCheckbox"/>
+                <Label Text="Admin ticket?" FontSize="16" VerticalOptions="Center"/>
 
 
                 <Button Text="Save Task" FontSize="18" Padding="10" BackgroundColor="Green" TextColor="White" Clicked="OnSaveTaskClicked" />

@@ -21,6 +21,8 @@ namespace ClearTask.Models
         public Handyman? hassignedTo { get; set; }
         public ObjectId sector { get; set; }
         public Sector? actualSector { get; set; }
+        public ObjectId createdBy { get; set; }
+        public Boolean? isAdmin { get; set; }
     }
 
     public enum TaskStatus

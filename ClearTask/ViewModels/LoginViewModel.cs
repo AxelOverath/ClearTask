@@ -42,6 +42,7 @@ namespace ClearTask.ViewModels
             if (existingUser != null && BCrypt.Net.BCrypt.Verify(Password, existingUser.password))
             {
                 // Save user details in a static storage class
+                UserStorage.Id = existingUser.Id;
                 UserStorage.Username = existingUser.username;
                 UserStorage.Email = existingUser.email;
                 UserStorage.Password = existingUser.password;
