@@ -5,6 +5,7 @@ using CustomTag = ClearTask.Models.Tag;
 using MongoDB.Driver.GridFS;
 using System.Text.Json;
 
+using MongoDB.Driver.Linq;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -264,5 +265,56 @@ namespace ClearTask.Data
         {
             TagUpdated?.Invoke();
         }
+
+        /// <summary>
+        /// Haal het aantal taken per status op.
+        /// </summary>
+        public static async Task<Dictionary<Models.TaskStatus, int>> GetTaskCountByStatus()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t => t.status)
+                        .ToDictionary(g => g.Key, g => g.Count());
+        }
+
+        /// <summary>
+        /// Haal het aantal taken per sector op.
+        /// </summary>
+        public static async Task<Dictionary<string, int>> GetTaskCountPerSector()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+            var sectors = await taskCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t => t.sector)
+                        .ToDictionary(
+                            g => sectors.FirstOrDefault(s => s.Id == g.Key)?.title ?? "Onbekend",
+                            g => g.Count()
+                        );
+        }
+
+        /// <summary>
+        /// Haal het aantal voltooide taken op.
+        /// </summary>
+        public static async Task<int> GetCompletedTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Completed);
+        }
+
+        /// <summary>
+        /// Haal het aantal lopende taken op.
+        /// </summary>
+        public static async Task<int> GetOngoingTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.InProgress);
+        }
+
+        /// <summary>
+        /// Haal het aantal openstaande taken op.
+        /// </summary>
+        public static async Task<int> GetOpenTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Pending);
+        }
+
     }
 }
