@@ -11,7 +11,6 @@ namespace ClearTask.Models
         public string? photo { get; set; }
         public List<ObjectId>? tags { get; set; }
         public List<Tag>? taglist { get; set; }
-        public List<string>? tagtext { get; set; }
         public DateTime? deadline { get; set; }
 
         [BsonRepresentation(BsonType.String)]

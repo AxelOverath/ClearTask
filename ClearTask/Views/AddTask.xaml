@@ -19,7 +19,7 @@
                 <Button Text="Pick Image" Clicked="OnPickImageClicked"/>
                 <Image x:Name="taskImage" HeightRequest="150" WidthRequest="150"/>
 
-                <CheckBox x:Name="AdminTicketCheckbox"/>
+                <CheckBox x:Name="AdminTicketCheckbox" IsVisible="False"/>
                 <Label Text="Admin ticket?" FontSize="16" VerticalOptions="Center"/>
 
 

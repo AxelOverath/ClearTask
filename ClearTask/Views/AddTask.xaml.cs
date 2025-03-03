@@ -168,9 +168,10 @@ namespace ClearTask.Views
             }
         }
 
-        private void SetDatePickerVisibility(object sender, EventArgs e)
+        private void SetManagerVisibility(object sender, EventArgs e)
         {
             DeadlinePicker.IsVisible = (UserStorage.UserRole == Role.Manager);
+            AdminTicketCheckbox.IsVisible = (UserStorage.UserRole == Role.Manager);
         }
 
 
