@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClearTask.Models
 {
+    [BsonIgnoreExtraElements]
     public class Task_
     {
         public ObjectId Id { get; set; }

@@ -18,6 +18,7 @@ namespace ClearTask
             Routing.RegisterRoute(nameof(TagEditPage), typeof(TagEditPage));
             Routing.RegisterRoute("tagcreate", typeof(TagCreatePage));
             Routing.RegisterRoute("tagoverview", typeof(TagOverviewPage));
+            Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
 
             GoToLogin();
         }
@@ -69,6 +70,22 @@ namespace ClearTask
                 });
 
                 tabBar.Items.Add(adminSection);
+            }
+
+            // Extra tabs voor beheerders
+            if (UserStorage.UserRole == Role.Manager && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
+            {
+                var managerSection = new ShellSection { Title = "Manage" };
+
+                managerSection.Items.Add(new ShellContent
+                {
+                    Title = "dashboard",
+                    ContentTemplate = new DataTemplate(typeof(ManagerDashboardPage)),
+                    Route = "dashboard"
+                });
+
+
+                tabBar.Items.Add(managerSection);
             }
 
             // Voeg de TabBar toe

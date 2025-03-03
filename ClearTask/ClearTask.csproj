@@ -36,8 +36,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
 	</PropertyGroup>
+
 
 	<Target Name="UpdateNetworkConfig" BeforeTargets="Build">
 		<Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)scripts\update_security_config.ps1" />
@@ -47,6 +47,9 @@
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 		<MauiXaml Include="Views\Pc\UsersPage.xaml" />
+		
+
+		
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -63,40 +66,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidResource Remove="Resources\xml\**" />
-	  <Compile Remove="Resources\xml\**" />
-	  <EmbeddedResource Remove="Resources\xml\**" />
-	  <MauiCss Remove="Resources\xml\**" />
-	  <MauiXaml Remove="Resources\xml\**" />
-	  <None Remove="Resources\xml\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="appsettings.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="appsettings.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Views\pc\AdminPagel.xaml.cs">
-	    <DependentUpon>AdminPagel.xaml</DependentUpon>
+	  <Compile Update="Views\pc\ManagerDashboardPage.xaml.cs">
+	    <DependentUpon>ManagerDashboardPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\pc\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -122,10 +109,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\AddTask.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\pc\AdminPagel.xaml">
+	  <MauiXaml Update="Views\pc\ManagerDashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\LoginPage.xaml">
@@ -153,10 +137,6 @@
 	  <MauiXaml Update="Views\TaskList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Platforms\Android\Resources\xml\" />
 	</ItemGroup>
 
 </Project>
