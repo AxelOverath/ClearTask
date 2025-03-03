@@ -3,7 +3,6 @@ using ClearTask.Models;
 using Microsoft.Maui.Storage;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Diagnostics;
 
 namespace ClearTask.Views.Pc;
 
@@ -13,7 +12,9 @@ public partial class EditUserPage : ContentPage
     public string UserId { get; set; }
     public User CurrentUser { get; set; }
 
-    // Eigenschappen om de bewerkbaarheid en zichtbaarheid van knoppen te regelen
+    // Extra properties for UI control
+    public List<Role> Roles { get; set; } = new List<Role> { Role.Admin, Role.Manager, Role.Handyman, Role.Employee };
+
     private bool _isManager;
     public bool IsManager
     {
@@ -68,29 +69,31 @@ public partial class EditUserPage : ContentPage
     {
         base.OnNavigatedTo(args);
 
-        // Verkrijg de ingelogde gebruiker
-        var loggedInUser = UserStorage.UserRole;  // Dit moet je implementeren of aanpassen naar je sessie/gebruikersservice
+        var loggedInUserRole = UserStorage.UserRole;
 
-        IsManager = loggedInUser == Role.Manager;
-        IsAdmin = loggedInUser == Role.Admin;
+        IsManager = loggedInUserRole == Role.Manager;
+        IsAdmin = loggedInUserRole == Role.Admin;
 
         if (!string.IsNullOrEmpty(UserId))
         {
             var objectId = new ObjectId(UserId);
-            CurrentUser = await DatabaseService.UsersCollection.Find(u => u.Id == objectId).FirstOrDefaultAsync();
 
-            if (CurrentUser != null)
+            // ✅ Fetch user data properly
+            var userFromDb = await DatabaseService.UsersCollection.Find(u => u.Id == objectId).FirstOrDefaultAsync();
+
+            if (userFromDb != null)
             {
-                // Bind de eigenschappen aan de view
-                BindingContext = this; // Dit zorgt ervoor dat de UI correct wordt bijgewerkt
+                CurrentUser = userFromDb; 
+                OnPropertyChanged(nameof(CurrentUser)); 
 
-                // De admin heeft volledige bewerkingsmogelijkheden
+                
+                BindingContext = this;
+
+                
                 IsEditable = IsAdmin;
+                CanDeleteUser = IsAdmin;
 
-                // Manager kan niet bewerken, maar kan wel de data zien
-                CanDeleteUser = !IsManager;
-
-                // Stel de waarden van de picker in voor de rol
+                
                 RolePicker.ItemsSource = new List<Role> { Role.Admin, Role.Manager, Role.Handyman, Role.Employee };
                 RolePicker.SelectedItem = CurrentUser.userRole;
             }
@@ -101,6 +104,7 @@ public partial class EditUserPage : ContentPage
     {
         if (CurrentUser != null)
         {
+            // Als het wachtwoord is gewijzigd, versleutel het
             if (!string.IsNullOrEmpty(CurrentUser.password) && CurrentUser.password != "defaultValue")
             {
                 CurrentUser.password = BCrypt.Net.BCrypt.HashPassword(CurrentUser.password);

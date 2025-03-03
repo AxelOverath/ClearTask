@@ -20,6 +20,7 @@ namespace ClearTask
             Routing.RegisterRoute("tagoverview", typeof(TagOverviewPage));
             Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
             Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
+            Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
             GoToLogin();
         }
 
@@ -48,8 +49,14 @@ namespace ClearTask
                 ContentTemplate = new DataTemplate(typeof(TaskList)),
                 Route = "tasks"
             };
+            var taskcreatedtab = new ShellContent
+            {
+                Title = "Reported Tasks",
+                ContentTemplate = new DataTemplate(typeof(ReportedTasklist)),
+                Route = "ReportedTasklist"
+            };
             tabBar.Items.Add(taskTab);
-
+            tabBar.Items.Add(taskcreatedtab);
             // Extra tabs voor beheerders
             if (UserStorage.UserRole == Role.Admin && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
             {

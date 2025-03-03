@@ -94,6 +94,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\ReportedTasklist.xaml.cs">
+	    <DependentUpon>ReportedTasklist.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\pc\ManagerDashboardPage.xaml.cs">
 	    <DependentUpon>ManagerDashboardPage.xaml</DependentUpon>
 	  </Compile>
@@ -124,6 +127,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\ReportedTasklist.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\ManagerDashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
