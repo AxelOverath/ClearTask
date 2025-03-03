@@ -76,7 +76,10 @@ namespace ClearTask.Views
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
                 assignedTo = ObjectId.Empty,
-                sector = ObjectId.Empty
+                sector = ObjectId.Empty,
+                createdBy = UserStorage.Id,
+                isAdmin = AdminTicketCheckbox.IsChecked
+
             };
 
             await _viewModel.AddTask(newTask);
@@ -163,6 +166,11 @@ namespace ClearTask.Views
                     return new List<string> { "DefaultTag" };
                 }
             }
+        }
+
+        private void SetDatePickerVisibility(object sender, EventArgs e)
+        {
+            DeadlinePicker.IsVisible = (UserStorage.UserRole == Role.Manager);
         }
 
 

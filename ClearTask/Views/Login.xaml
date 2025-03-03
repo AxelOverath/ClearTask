@@ -2,10 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:handlers="clr-namespace:ClearTask.Handlers"
+             xmlns:vm="clr-namespace:ClearTask.ViewModels"
              x:Class="ClearTask.Views.Login"
              Title="Login"
              BackgroundColor="#a8ffb2"
              Shell.TabBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
+
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                          Padding="20"
@@ -23,7 +29,7 @@
                 </Frame>
 
                 <Frame Padding="0" Margin="-35,0,0,0" HasShadow="True" BorderColor="White" HorizontalOptions="FillAndExpand">
-                    <handlers:Borderless VerticalOptions="Center" x:Name = "identifierInput" Margin="40,0,0,0" Placeholder="Username" Keyboard="Text" PlaceholderColor="#09272e"  TextColor="Black"/>
+                    <handlers:Borderless VerticalOptions="Center" Text="{Binding Identifier}" Margin="40,0,0,0" Placeholder="Username" Keyboard="Text" PlaceholderColor="#09272e" TextColor="Black"/>
                 </Frame>
             </StackLayout>
 
@@ -33,17 +39,17 @@
                 </Frame>
 
                 <Frame Padding="0" Margin="-35,0,0,0" HasShadow="True" BorderColor="White" HorizontalOptions="FillAndExpand">
-                    <handlers:Borderless x:Name="passwordInput" VerticalOptions="Center" Margin="40,0,0,0" Placeholder="Password" IsPassword="True" PlaceholderColor="#09272e" TextColor="Black"/>
+                    <handlers:Borderless Text="{Binding Password}" x:Name="passwordInput" VerticalOptions="Center" Margin="40,0,0,0" Placeholder="Password" IsPassword="True" PlaceholderColor="#09272e" TextColor="Black"/>
                 </Frame>
             </StackLayout>
 
             <!-- Remember Me Checkbox -->
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                <CheckBox x:Name="rememberMeCheckbox" Color="#43daff"/>
+                <CheckBox IsChecked="{Binding RememberMe}" Color="#43daff"/>
                 <Label Text="Remember Me" FontSize="16" TextColor="#09272e" VerticalOptions="Center" Margin="5,0,0,0"/>
             </StackLayout>
 
-            <Button Clicked="SignIn" Text="Login" WidthRequest="100" CornerRadius="20" HorizontalOptions="Center" BackgroundColor="#43daff"/>
+            <Button Command="{Binding SignInCommand}" Text="Login" WidthRequest="100" CornerRadius="20" HorizontalOptions="Center" BackgroundColor="#43daff"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
