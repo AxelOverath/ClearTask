@@ -42,6 +42,9 @@
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 		<MauiXaml Include="Views\Pc\UsersPage.xaml" />
+		
+
+		
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -63,11 +66,12 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\pc\AdminPagel.xaml.cs">
-	    <DependentUpon>AdminPagel.xaml</DependentUpon>
+	  <Compile Update="Views\pc\ManagerDashboardPage.xaml.cs">
+	    <DependentUpon>ManagerDashboardPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\pc\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -93,7 +97,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\pc\AdminPagel.xaml">
+	  <MauiXaml Update="Views\pc\ManagerDashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\LoginPage.xaml">
