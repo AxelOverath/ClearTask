@@ -10,23 +10,23 @@
         <Label Text="{Binding Id}" FontSize="12" TextColor="Gray" />
 
         <!-- Gebruikersnaam -->
-        <Entry Text="{Binding username}" Placeholder="Gebruikersnaam" />
+        <Entry Text="{Binding username}" Placeholder="Gebruikersnaam" IsReadOnly="{Binding IsManager}" />
 
         <!-- E-mail -->
-        <Entry Text="{Binding email}" Placeholder="E-mail" Keyboard="Email"/>
+        <Entry Text="{Binding email}" Placeholder="E-mail" Keyboard="Email" IsReadOnly="{Binding IsManager}" />
 
         <!-- Wachtwoord -->
-        <Entry Text="{Binding password}" Placeholder="Wachtwoord" IsPassword="True"/>
+        <Entry Text="{Binding password}" Placeholder="Wachtwoord" IsPassword="True" IsReadOnly="{Binding IsManager}" />
 
         <!-- Rol -->
         <Picker x:Name="RolePicker" Title="Rol"
-                SelectedItem="{Binding userRole}">
+                SelectedItem="{Binding userRole}" IsEnabled="{Binding IsAdmin}">
         </Picker>
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
             <!-- Opslaan knop -->
             <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"
-            CornerRadius="10" Padding="10" WidthRequest="100"/>
+            CornerRadius="10" Padding="10" WidthRequest="100" IsEnabled="{Binding IsEditable}"/>
 
             <!-- Terug knop -->
             <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"
@@ -34,7 +34,7 @@
 
             <!-- Verwijder knop -->
             <Button Text="Verwijderen" Clicked="OnDeleteClicked" BackgroundColor="Red" TextColor="White"
-            CornerRadius="10" Padding="10" WidthRequest="100"/>
+            CornerRadius="10" Padding="10" WidthRequest="100" IsVisible="{Binding CanDeleteUser}"/>
         </HorizontalStackLayout>
 
     </VerticalStackLayout>
