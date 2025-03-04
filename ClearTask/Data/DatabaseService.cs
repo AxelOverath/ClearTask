@@ -60,6 +60,11 @@ namespace ClearTask.Data
             await userCollection.InsertOneAsync(user);
         }
 
+        public static IMongoCollection<Sector> SectorCollection
+        {
+            get { return sectorCollection; }
+        }
+
         // Fetch Handyman object by ObjectId
         public static async Task<Handyman> GetHandymanById(ObjectId userId)
         {
@@ -127,19 +132,6 @@ namespace ClearTask.Data
 
             if (task != null)
             {
-                // Populate 'assignedTo' (Handyman)
-                if (task.assignedTo != null)
-                {
-                    var handyman = await GetHandymanById(task.assignedTo);
-                    task.hassignedTo = handyman; // Assign the related Handyman object
-                }
-
-                // Populate 'sector' (Sector)
-                if (task.sector != null)
-                {
-                    var sector = await GetSectorById(task.sector);
-                    task.actualSector = sector; // Assign the related Sector object
-                }
 
                 // Populate 'taglist' (Tags)
                 if (task.tags != null && task.tags.Any())

@@ -14,13 +14,10 @@ namespace ClearTask.Models
         public List<Tag>? taglist { get; set; }
         public DateTime? deadline { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public TaskStatus status { get; set; } // Dit zorgt ervoor dat het als string wordt opgeslagen
-
+        [BsonRepresentation(BsonType.String)]  // Dit zorgt ervoor dat het als string wordt opgeslagen
+        public TaskStatus status { get; set; } 
         public ObjectId assignedTo { get; set; }
-        public Handyman? hassignedTo { get; set; }
         public ObjectId sector { get; set; }
-        public Sector? actualSector { get; set; }
         public ObjectId createdBy { get; set; }
         public Boolean? isAdmin { get; set; }
     }

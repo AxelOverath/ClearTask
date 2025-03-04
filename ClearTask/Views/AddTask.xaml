@@ -1,30 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ClearTask.Views.AddTask">
+             x:Class="ClearTask.Views.AddTask"
+             BackgroundColor="#F9F9F9"
+             Title="Add New Task">
 
     <ContentPage.Content>
-        <Grid Padding="20">
-            <StackLayout Spacing="15">
-                <Button Text="Back" FontSize="16" Padding="5" BackgroundColor="LightGray" Clicked="OnBackButtonClicked" />
+        <ScrollView>
+            <Grid Padding="20">
+                <StackLayout Spacing="20">
 
-                <Label Text="Add New Task" FontSize="24" HorizontalOptions="Center" />
+                    <!-- Header -->
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Button Text="Back" 
+                                FontSize="16" 
+                                Padding="5" 
+                                TextColor="Black"
+                                BackgroundColor="#E0E0E0" 
+                                CornerRadius="10"
+                                Clicked="OnBackButtonClicked" />
+                        <Label Text="Add New Task" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" 
+                               Grid.Column="1" />
+                    </Grid>
 
-                <Entry x:Name="tasktitle" Placeholder="Task Title" FontSize="18" />
+                    <!-- Task Title -->
+                    <Frame CornerRadius="10" 
+                           HasShadow="True" 
+                           Padding="10" 
+                           BackgroundColor="White">
+                        <Entry x:Name="tasktitle" 
+                               Placeholder="Task Title" 
+                               FontSize="18" />
+                    </Frame>
 
-                <Editor x:Name="taskdescription" Placeholder="Task Description" FontSize="16" HeightRequest="100" />
+                    <!-- Task Description -->
+                    <Frame CornerRadius="10" 
+                           HasShadow="True" 
+                           Padding="10" 
+                           BackgroundColor="White">
+                        <Editor x:Name="taskdescription" 
+                                Placeholder="Task Description" 
+                                FontSize="16" 
+                                HeightRequest="120" />
+                    </Frame>
 
-                <DatePicker x:Name="DeadlinePicker" IsVisible="False" />
+                    <!-- Deadline Picker (Hidden) -->
+                    <Label Text="Set Deadline" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           IsVisible="False" />
+                    <DatePicker x:Name="DeadlinePicker" 
+                                Format="D" 
+                                IsVisible="False" />
 
-                <Button Text="Pick Image" Clicked="OnPickImageClicked"/>
-                <Image x:Name="taskImage" HeightRequest="150" WidthRequest="150"/>
+                    <!-- Sector Picker -->
+                    <Label Text="Select Sector" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker x:Name="SectorPicker" 
+                            Title="Choose a Sector" />
 
-                <CheckBox x:Name="AdminTicketCheckbox" IsVisible="False"/>
-                <Label Text="Admin ticket?" FontSize="16" VerticalOptions="Center"/>
+                    <!-- User Picker (Hidden) -->
+                    <Label Text="Assign to User" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           IsVisible="False" />
+                    <Picker x:Name="UserPicker" 
+                            Title="Select a User" 
+                            IsVisible="False" />
 
+                    <!-- Admin Ticket Option (Hidden) -->
+                    <StackLayout Orientation="Horizontal" 
+                                 Spacing="10" 
+                                 IsVisible="False">
+                        <CheckBox x:Name="AdminTicketCheckbox" />
+                        <Label Text="Admin ticket?" 
+                               FontSize="16" 
+                               VerticalOptions="Center" />
+                    </StackLayout>
 
-                <Button Text="Save Task" FontSize="18" Padding="10" BackgroundColor="Green" TextColor="White" Clicked="OnSaveTaskClicked" />
-            </StackLayout>
-        </Grid>
+                    <!-- Save Button -->
+                    <Button Text="Save Task" 
+                            FontSize="18" 
+                            Padding="15" 
+                            BackgroundColor="#4CAF50" 
+                            TextColor="White" 
+                            CornerRadius="10"
+                            Clicked="OnSaveTaskClicked" />
+
+                </StackLayout>
+            </Grid>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

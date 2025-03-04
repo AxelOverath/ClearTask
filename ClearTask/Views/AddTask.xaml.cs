@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+ using System.Runtime.InteropServices;
 using ClearTask.Data;
 using ClearTask.Models;
 using ClearTask.ViewModels;
@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using MongoDB.Driver;
+using Tag = ClearTask.Models.Tag;
 
 namespace ClearTask.Views
 {
@@ -21,39 +23,55 @@ namespace ClearTask.Views
             InitializeComponent();
             _viewModel = new TaskListViewModel();
             BindingContext = _viewModel;
+            LoadUsers();
+            LoadSectors();
         }
-
-        //  Handle Image Selection & Upload
-        private async void OnPickImageClicked(object sender, EventArgs e)
+        private async void LoadUsers()
         {
             try
             {
-                var result = await FilePicker.PickAsync(new PickOptions
-                {
-                    FileTypes = FilePickerFileType.Images,
-                    PickerTitle = "Select an image"
-                });
+                var users = await DatabaseService.UsersCollection.Find(user => user.userRole == Role.Handyman ).ToListAsync();
 
-                if (result != null)
+                if (users != null && users.Any())
                 {
-                    using (var stream = await result.OpenReadAsync())
-                    {
-                        // Upload logic if needed
-                    }
-
-                    await DisplayAlert("Success", "Image uploaded successfully!", "OK");
+                    UserPicker.ItemsSource = users;
+                    UserPicker.ItemDisplayBinding = new Binding("username");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to pick image: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Failed to load users: {ex.Message}", "OK");
+            }
+        }
+        private async void LoadSectors()
+        {
+            try
+            {
+                var sectors = await DatabaseService.SectorCollection.Find(_ => true).ToListAsync();
+
+                if (sectors != null && sectors.Any())
+                {
+                    SectorPicker.ItemsSource = sectors;
+                    SectorPicker.ItemDisplayBinding = new Binding("name");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load sectors: {ex.Message}", "OK");
             }
         }
 
-        //  Save Task with Image ID
         private async void OnSaveTaskClicked(object sender, EventArgs e)
         {
-            string description = taskdescription.Text;
+            // Ensure title and description are never null
+            string title = tasktitle.Text?.Trim() ?? string.Empty;
+            string description = taskdescription.Text?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                await DisplayAlert("Validation Error", "Task title is required.", "OK");
+                return;
+            }
 
             // Fetch the list of generated tags from the API
             List<string> generatedTags = await GenerateTagsFromAPI(description) ?? new List<string>();
@@ -68,15 +86,15 @@ namespace ClearTask.Views
 
             var newTask = new Task_
             {
-                title = tasktitle.Text,
+                title = title,
                 description = description,
                 photo = "https://example.com/lucas.jpg", // Save Image ID if needed
                 tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
                 taglist = tagList,  // Assign the generated tag list
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
-                assignedTo = ObjectId.Empty,
-                sector = ObjectId.Empty,
+                assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,
+                sector = (SectorPicker.SelectedItem as Sector)?.Id ?? ObjectId.Empty,
                 createdBy = UserStorage.Id,
                 isAdmin = AdminTicketCheckbox.IsChecked
 
@@ -170,8 +188,16 @@ namespace ClearTask.Views
 
         private void SetManagerVisibility(object sender, EventArgs e)
         {
-            DeadlinePicker.IsVisible = (UserStorage.UserRole == Role.Manager);
-            AdminTicketCheckbox.IsVisible = (UserStorage.UserRole == Role.Manager);
+            if (UserStorage.UserRole == Role.Manager)
+            {
+                // Show elements specific to the Manager role
+                DeadlinePicker.IsVisible = true;
+                AdminTicketCheckbox.IsVisible = true;
+                UserPicker.IsVisible = true;
+                this.FindByName<Label>("DeadlineLabel").IsVisible = true;
+                this.FindByName<Label>("UserPickerLabel").IsVisible = true;
+                this.FindByName<StackLayout>("AdminTicketStack").IsVisible = true;
+            }
         }
 
 
