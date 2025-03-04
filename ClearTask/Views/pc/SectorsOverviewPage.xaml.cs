@@ -1,5 +1,7 @@
 using ClearTask.Data;
 using ClearTask.Models;
+using ClearTask.Views.pc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -9,7 +11,6 @@ namespace ClearTask.Views.Pc;
 public partial class SectorsOverviewPage : ContentPage
 {
     public ObservableCollection<Sector> Sectors { get; set; } = new();
-    public ICommand SectorClickedCommand { get; private set; }
 
     public SectorsOverviewPage()
     {
@@ -17,7 +18,6 @@ public partial class SectorsOverviewPage : ContentPage
         BindingContext = this;
         LoadSectors();
         DatabaseService.SectorUpdated += async () => await LoadSectors();
-        SectorClickedCommand = new Microsoft.Maui.Controls.Command<Sector>(OnSectorClicked);
     }
 
     private async Task LoadSectors()
@@ -38,16 +38,34 @@ public partial class SectorsOverviewPage : ContentPage
         }
     }
 
-    private async void OnSectorClicked(Sector sector)
+    private async void OnAddSectorClicked(object sender, EventArgs e)
     {
-        if (sector != null)
+        await Navigation.PushAsync(new AddSectorPage());
+    }
+
+    public async void DeleteSectorClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is ObjectId sectorId)
         {
-            await Shell.Current.GoToAsync($"{nameof(EditUserPage)}?sectorId={sector.Id}");
+            var confirmation = await DisplayAlert("Bevestigen", $"Weet je zeker dat je deze sector wilt verwijderen?", "Ja", "Nee");
+
+            if (confirmation)
+            {
+                await Data.DatabaseService.DeleteSector(sectorId);
+
+                await DisplayAlert("Succes", "Sector verwijderd.", "OK");
+            }
         }
     }
 
-    private async void OnAddSectorClicked(object sender, EventArgs e)
+    private async void EditSectorName(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("addsector");
+        Button button = sender as Button;
+        await Navigation.PushAsync(new EditSectorPage(button.CommandParameter.ToString()));
+    }
+    private async void OverviewHandyman(object sender, EventArgs e)
+    {
+        Button button = sender as Button;
+        await Navigation.PushAsync(new HandymanOverviewPage(button.CommandParameter.ToString()));
     }
 }
