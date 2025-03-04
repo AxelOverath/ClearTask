@@ -116,7 +116,6 @@ namespace ClearTask.Views
             {
                 var requestBody = new
                 {
-                    model = "tagger",
                     prompt = enhancedPrompt,
                     stream = false,
                     options = new { temperature = 0 },
@@ -142,7 +141,7 @@ namespace ClearTask.Views
                     Console.WriteLine("Sending API request...");
                     Console.WriteLine($"Request Body: {JsonSerializer.Serialize(requestBody)}");
 
-                    HttpResponseMessage response = await client.PostAsync($"{ApiUri}/api/generate", jsonContent);
+                    HttpResponseMessage response = await client.PostAsync($"{ApiUri}/query", jsonContent);
                     response.EnsureSuccessStatusCode();
 
                     string responseContent = await response.Content.ReadAsStringAsync();
@@ -150,32 +149,26 @@ namespace ClearTask.Views
 
                     var finalResponse = JsonSerializer.Deserialize<JsonElement>(responseContent);
 
-                    // Extract the "response" field (which is itself a JSON string)
+                    // Extract the "response" field (which is a space-separated string)
                     if (finalResponse.TryGetProperty("response", out var responseElement))
                     {
-                        string responseJson = responseElement.GetString();
-                        Console.WriteLine($"Extracted Inner JSON: {responseJson}");
+                        string responseText = responseElement.GetString();
+                        Console.WriteLine($"Extracted Response Text: {responseText}");
 
-                        // Deserialize the inner JSON string
-                        var innerResponse = JsonSerializer.Deserialize<JsonElement>(responseJson);
+                        // Split the string into tags
+                        List<string> tags = responseText.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                                         .ToList();
 
-                        if (innerResponse.TryGetProperty("generated_tags", out var tagsElement))
-                        {
-                            List<string> tags = new List<string>();
-                            foreach (var item in tagsElement.EnumerateArray())
-                            {
-                                tags.Add(item.GetString());
-                            }
+                        Console.WriteLine("Extracted Tags:");
+                        tags.ForEach(tag => Console.WriteLine($"- {tag}"));
 
-                            Console.WriteLine("Extracted Tags:");
-                            tags.ForEach(tag => Console.WriteLine($"- {tag}"));
-
-                            return tags;
-                        }
+                        return tags;
                     }
-
-                    Console.WriteLine("Property 'generated_tags' not found in extracted JSON.");
-                    return new List<string> { "DefaultTag" };
+                    else
+                    {
+                        Console.WriteLine("Property 'generated_tags' not found in extracted JSON.");
+                        return new List<string> { "DefaultTag" };
+                    }
                 }
                 catch (Exception ex)
                 {

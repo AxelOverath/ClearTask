@@ -25,10 +25,9 @@ namespace ClearTask.Data
 
         static DatabaseService()
         {
-            const string connectionUri = "mongodb://axeloverath:Lao1KgIFn9WJeofd@cleartask-shard-00-00.dcnmf.mongodb.net:27017,cleartask-shard-00-01.dcnmf.mongodb.net:27017,cleartask-shard-00-02.dcnmf.mongodb.net:27017/?ssl=true&replicaSet=atlas-ah0h9j-shard-0&authSource=admin&retryWrites=true&w=majority&appName=ClearTask";
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
+            var settings = MongoClientSettings.FromConnectionString(AppConfig.DbConnectionString);
 
-            string databaseName = "mongodbVSCodePlaygroundDB";
+            string databaseName = "ClearTaskDB";
             var client = new MongoClient(settings);
             var db = client.GetDatabase(databaseName);
             gridFS = new GridFSBucket(db);
