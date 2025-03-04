@@ -21,6 +21,7 @@ namespace ClearTask
             Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
             Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
             Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
+            Routing.RegisterRoute(nameof(TaskDetailPage), typeof(TaskDetailPage));
             GoToLogin();
         }
 
