@@ -135,6 +135,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+
+	  <MauiXaml Update="Views\pc\AddSectorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\AdminPagel.xaml">
+
 	  <MauiXaml Update="Views\TaskDetailPageEdit.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -145,6 +151,13 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\ManagerDashboardPage.xaml">
+
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\EditSectorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\pc\HandymanOverviewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\LoginPage.xaml">
@@ -156,6 +169,9 @@
 	  <MauiXaml Update="Views\pc\EditUserPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+
+	  <MauiXaml Update="Views\pc\SectorsOverviewPage.xaml">
+
 	  <MauiXaml Update="Views\pc\TagEditPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -163,6 +179,7 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\TagOverviewPage.xaml">
+
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\UsersPage.xaml">
