@@ -19,7 +19,9 @@ namespace ClearTask
             Routing.RegisterRoute("tagcreate", typeof(TagCreatePage));
             Routing.RegisterRoute("tagoverview", typeof(TagOverviewPage));
             Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
-
+            Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
+            Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
+            Routing.RegisterRoute(nameof(TaskDetailPage), typeof(TaskDetailPage));
             GoToLogin();
         }
 
@@ -48,8 +50,14 @@ namespace ClearTask
                 ContentTemplate = new DataTemplate(typeof(TaskList)),
                 Route = "tasks"
             };
+            var taskcreatedtab = new ShellContent
+            {
+                Title = "Reported Tasks",
+                ContentTemplate = new DataTemplate(typeof(ReportedTasklist)),
+                Route = "ReportedTasklist"
+            };
             tabBar.Items.Add(taskTab);
-
+            tabBar.Items.Add(taskcreatedtab);
             // Extra tabs voor beheerders
             if (UserStorage.UserRole == Role.Admin && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
             {
@@ -69,6 +77,13 @@ namespace ClearTask
                     Route = "tagoverview"
                 });
 
+                adminSection.Items.Add(new ShellContent
+                {
+                    Title = "adminticketlist",
+                    ContentTemplate = new DataTemplate(typeof(AdminTicketList)),
+                    Route = "adminticketlist"
+                });
+
                 tabBar.Items.Add(adminSection);
             }
 
@@ -82,6 +97,20 @@ namespace ClearTask
                     Title = "dashboard",
                     ContentTemplate = new DataTemplate(typeof(ManagerDashboardPage)),
                     Route = "dashboard"
+                });
+
+                managerSection.Items.Add(new ShellContent
+                {
+                    Title = "Gebruikers",
+                    ContentTemplate = new DataTemplate(typeof(UsersPage)),
+                    Route = "users"
+                });
+
+                managerSection.Items.Add(new ShellContent
+                {
+                    Title = "adminticketlist",
+                    ContentTemplate = new DataTemplate(typeof(AdminTicketList)),
+                    Route = "adminticketlist"
                 });
 
 

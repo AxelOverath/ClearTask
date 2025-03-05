@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.TaskDetailPage"
+             Title="Taak Details">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Taak Details" FontSize="24" HorizontalOptions="Center" TextColor="Blue"/>
+
+        <Label Text="Titel" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.title}" FontSize="16" />
+
+        <Label Text="Beschrijving" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.description}" FontSize="16" />
+
+        <Label Text="Deadline" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.deadline, StringFormat='{0:dd/MM/yyyy}'}" FontSize="16" />
+
+        <Label Text="Status" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.status}" FontSize="16" />
+
+        <Label Text="Handyman" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.hassignedTo.name}" FontSize="16" />
+
+        <Label Text="Sector" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.actualSector.name}" FontSize="16" />
+
+        <Label Text="Gemaakt door" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="{Binding Task.createdBy}" FontSize="16" />
+
+        <Label Text="Beschikbare Tags" FontSize="18" FontAttributes="Bold"/>
+        <CollectionView ItemsSource="{Binding AvailableTags}" SelectionMode="None" ItemsLayout="HorizontalList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="5" BackgroundColor="LightGray" CornerRadius="5" Margin="3">
+                        <Label Text="{Binding name}" FontSize="14" TextColor="Black"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Label Text="Geselecteerde Tags" FontSize="18" FontAttributes="Bold"/>
+        <CollectionView ItemsSource="{Binding Task.taglist}" SelectionMode="None" ItemsLayout="HorizontalList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="5" BackgroundColor="MediumSeaGreen" CornerRadius="5" Margin="3">
+                        <Label Text="{Binding name}" FontSize="14" TextColor="White"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White" CornerRadius="10" />
+    </VerticalStackLayout>
+
+</ContentPage>

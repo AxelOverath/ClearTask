@@ -45,6 +45,7 @@ namespace ClearTask.Data
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
         public static IMongoCollection<CustomTag> TagCollection => tagCollection;
+        public static IMongoCollection<Sector> SectorCollection => sectorCollection;
         public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);

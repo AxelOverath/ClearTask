@@ -79,7 +79,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.2" />
@@ -92,8 +91,20 @@
 		<PackageReference Include="MongoDB.Driver" Version="3.1.0" />
 
 	</ItemGroup>
+	<PropertyGroup>
+		<WindowsSdkPackageVersion>10.0.19041.53</WindowsSdkPackageVersion>
+	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\TaskDetailPageEdit.xaml.cs">
+	    <DependentUpon>TaskDetailPageEdit.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\TaskDetailPage.xaml.cs">
+	    <DependentUpon>TaskDetailPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ReportedTasklist.xaml.cs">
+	    <DependentUpon>ReportedTasklist.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\pc\ManagerDashboardPage.xaml.cs">
 	    <DependentUpon>ManagerDashboardPage.xaml</DependentUpon>
 	  </Compile>
@@ -118,9 +129,21 @@
 	  <Compile Update="Views\pc\UsersPage.xaml.cs">
 	    <DependentUpon>UsersPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\AdminTicketList.xaml.cs">
+	    <DependentUpon>AdminTicketList.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\TaskDetailPageEdit.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TaskDetailPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ReportedTasklist.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\pc\ManagerDashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -146,7 +169,11 @@
 
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+
+	  <MauiXaml Update="Views\AdminTicketList.xaml">
+
 	  <MauiXaml Update="Views\TaskDetail.xaml">
+
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\TaskList.xaml">
