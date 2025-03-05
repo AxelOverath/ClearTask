@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Task Details"
+             x:Class="ClearTask.Views.TaskDetail"
+             BackgroundColor="White">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="20">
+
+                <!-- Header (Back Button + Edit Button) -->
+                <Grid ColumnDefinitions="Auto, * ,Auto">
+                    
+                    <!-- Back Button (Left) -->
+                    <Button Text="Back" 
+                            FontSize="15" 
+                            BackgroundColor="Transparent"
+                            TextColor="Blue"
+                            BorderColor="Blue"
+                            BorderWidth="0.1"
+                            HorizontalOptions="Start"
+                            Clicked="OnBackButtonClicked"
+                            Grid.Column="0"/>
+
+                    <!-- Task Title (Center) -->
+                    <Label Text="{Binding Task.title}" 
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="Black" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Grid.Column="1"/>
+
+                    
+                    <!-- Edit Button (Right) -->
+                    <Button Text="Edit"
+                            x:Name="EditButton"
+                            FontSize="15" 
+                            BackgroundColor="Transparent"
+                            TextColor="Blue"
+                            BorderColor="Blue"
+                            BorderWidth="0.1"
+                            HorizontalOptions="End"
+                            Clicked="OnEditButtonClicked"
+                            Grid.Column="2"/>
+                </Grid>
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
+                <!-- Task Description -->
+                <Label Text="Task Description" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="#2C3E50" />
+                <Label Text="{Binding Task.description}" 
+                       FontSize="16" 
+                       TextColor="#666666" />
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
+                <!-- Task Image -->
+                <Image Source="{Binding TaskImageSource}" 
+       HeightRequest="200" 
+       Aspect="AspectFit" 
+       HorizontalOptions="Center" />
+
+
+                <!-- Deadline -->
+                <Label Text="Deadline" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="#2C3E50" />
+                <Label Text="{Binding Task.deadline, StringFormat='{0:MMMM dd, yyyy}', FallbackValue='No deadline'}" 
+                       FontSize="16" 
+                       TextColor="#E74C3C" />
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
+                <!-- Status -->
+                <Label Text="Status" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="#2C3E50" />
+                <Frame Padding="5" CornerRadius="5" 
+                       BackgroundColor="{Binding Task.status, Converter={StaticResource StatusColorConverter}}">
+                    <Label Text="{Binding Task.status}" 
+                           FontSize="16" 
+                           TextColor="Black" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" />
+                </Frame>
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
+                <!-- Tags -->
+                <Label Text="Tags" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="#2C3E50" />
+                <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Start">
+                    <CollectionView ItemsSource="{Binding Task.taglist}" 
+                                    ItemsLayout="HorizontalList" 
+                                    HeightRequest="40">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Padding="5,2" BackgroundColor="#27AE60" CornerRadius="5" Margin="3">
+                                    <Label Text="{Binding name}" 
+                                           FontSize="14" 
+                                           TextColor="White" />
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </FlexLayout>
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
+                <!-- Assigned To (Visible only if IsAssignedUserVisible is true) -->
+                <StackLayout IsVisible="{Binding IsAssignedUserVisible}">
+                    <Label Text="Assigned To" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="#2C3E50" />
+                    <Label Text="{Binding AssignedUserName}" 
+                           FontSize="16" 
+                           TextColor="Black" />
+                </StackLayout>
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" IsVisible="{Binding IsAssignedUserVisible}" />
+
+                <!-- Sector (Visible only if IsSectorVisible is true) -->
+                <StackLayout IsVisible="{Binding IsSectorVisible}">
+                    <Label Text="Sector" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="#2C3E50" />
+                    <Label Text="{Binding SectorName}" 
+                           FontSize="16" 
+                           TextColor="Black" />
+                </StackLayout>
+
+                <!-- Divider -->
+                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" IsVisible="{Binding IsSectorVisible}" />
+
+                <!-- Start Task Button -->
+                <Button Text="Start Task" 
+                        FontSize="18" 
+                        BackgroundColor="Green" 
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Clicked="OnStartButtonClicked"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

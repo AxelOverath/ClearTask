@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.AdminTicketList">
+
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <StackLayout>
+                <Label Text="Tasks" FontSize="24" HorizontalOptions="Center" Margin="0,0,0,10" />
+                <Label Text="{Binding Tasks.Count, StringFormat='Total Tasks: {0}'}" FontSize="18" HorizontalOptions="Center" Margin="0,0,0,10" />
+                <ScrollView>
+                    <StackLayout>
+                        <CollectionView ItemsSource="{Binding Tasks}" SelectionMode="None"
+                                        HeightRequest="570"
+                                        VerticalOptions="FillAndExpand">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Padding="15" Margin="0,10" BorderColor="LightGray" CornerRadius="12" HasShadow="True">
+                                        <StackLayout>
+                                            <!-- Tags displayed at the top -->
+                                            <CollectionView ItemsSource="{Binding taglist}" ItemsLayout="HorizontalList" HeightRequest="30">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="3" BackgroundColor="MediumSeaGreen" CornerRadius="5" Margin="3">
+                                                            <Label Text="{Binding name}" FontSize="12" TextColor="White" />
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                            <Label Text="{Binding title}" FontSize="22" FontAttributes="Bold" TextColor="Black" Margin="0,5,0,2" />
+                                            <Label Text="{Binding description}" FontSize="16" TextColor="Gray" Margin="0,0,0,5" />
+
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                                                <Label Text="Deadline: " FontSize="14" TextColor="Black" />
+                                                <Label Text="{Binding deadline, StringFormat='{0:MM/dd/yyyy}'}" FontSize="14" TextColor="DarkGray" />
+                                            </StackLayout>
+
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                                                <Label Text="Status: " FontSize="14" TextColor="Black" />
+                                                <Label Text="{Binding status}" FontSize="14" TextColor="DarkGray" />
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+
+            <!-- Add Button at Bottom Center -->
+            <Grid VerticalOptions="End" HorizontalOptions="Center" Padding="10">
+                <Button Text="Add" FontSize="18" Padding="10" BackgroundColor="DodgerBlue" TextColor="White" Clicked="NavigateToAddTaskPage" />
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

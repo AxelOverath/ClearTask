@@ -3,7 +3,6 @@ using ClearTask.Models;
 using Microsoft.Maui.Storage;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Diagnostics;
 
 namespace ClearTask.Views.Pc;
 
@@ -13,75 +12,118 @@ public partial class EditUserPage : ContentPage
     public string UserId { get; set; }
     public User CurrentUser { get; set; }
 
+    // Extra properties for UI control
+    public List<Role> Roles { get; set; } = new List<Role> { Role.Admin, Role.Manager, Role.Handyman, Role.Employee };
 
+    private bool _isManager;
+    public bool IsManager
+    {
+        get => _isManager;
+        set
+        {
+            _isManager = value;
+            OnPropertyChanged(nameof(IsManager));
+        }
+    }
 
+    private bool _isAdmin;
+    public bool IsAdmin
+    {
+        get => _isAdmin;
+        set
+        {
+            _isAdmin = value;
+            OnPropertyChanged(nameof(IsAdmin));
+        }
+    }
+
+    private bool _canDeleteUser;
+    public bool CanDeleteUser
+    {
+        get => _canDeleteUser;
+        set
+        {
+            _canDeleteUser = value;
+            OnPropertyChanged(nameof(CanDeleteUser));
+        }
+    }
+
+    private bool _isEditable;
+    public bool IsEditable
+    {
+        get => _isEditable;
+        set
+        {
+            _isEditable = value;
+            OnPropertyChanged(nameof(IsEditable));
+        }
+    }
 
     public EditUserPage()
     {
         InitializeComponent();
         BindingContext = this;
-        
-
     }
-
-    public List<Role> Roles { get; } = new() { Role.Admin, Role.Manager, Role.Handyman, Role.Employee };
 
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
 
+        var loggedInUserRole = UserStorage.UserRole;
+
+        IsManager = loggedInUserRole == Role.Manager;
+        IsAdmin = loggedInUserRole == Role.Admin;
+
         if (!string.IsNullOrEmpty(UserId))
         {
             var objectId = new ObjectId(UserId);
-            CurrentUser = await DatabaseService.UsersCollection.Find(u => u.Id == objectId).FirstOrDefaultAsync();
 
-            if (CurrentUser != null)
+            // ✅ Fetch user data properly
+            var userFromDb = await DatabaseService.UsersCollection.Find(u => u.Id == objectId).FirstOrDefaultAsync();
+
+            if (userFromDb != null)
             {
-                // Zet de string om naar de enum voor userRole
-                CurrentUser.userRole = Enum.Parse<Role>(CurrentUser.userRole.ToString()); // Conversie van string naar enum
+                CurrentUser = userFromDb; 
+                OnPropertyChanged(nameof(CurrentUser)); 
 
-                // Stel de BindingContext in voor andere velden
-                BindingContext = CurrentUser;
+                
+                BindingContext = this;
 
-                // Stel de ItemsSource van de Picker in op de lijst van rollen
-                RolePicker.ItemsSource = Roles;
+                
+                IsEditable = IsAdmin;
+                CanDeleteUser = IsAdmin;
 
-                // Stel de geselecteerde rol in op de gebruiker
+                
+                RolePicker.ItemsSource = new List<Role> { Role.Admin, Role.Manager, Role.Handyman, Role.Employee };
                 RolePicker.SelectedItem = CurrentUser.userRole;
             }
         }
     }
 
-
     public async void OnSaveClicked(object sender, EventArgs e)
     {
         if (CurrentUser != null)
         {
-            // Controleer of het wachtwoord is gewijzigd
-            if (!string.IsNullOrEmpty(CurrentUser.password) && CurrentUser.password != "defaultValue")  // defaultValue kan je oorspronkelijke waarde zijn
+            // Als het wachtwoord is gewijzigd, versleutel het
+            if (!string.IsNullOrEmpty(CurrentUser.password) && CurrentUser.password != "defaultValue")
             {
-                // Versleutel het wachtwoord voordat je het opslaat
                 CurrentUser.password = BCrypt.Net.BCrypt.HashPassword(CurrentUser.password);
             }
-
-
-
 
             // Update de gebruiker in de database
             await DatabaseService.UsersCollection.ReplaceOneAsync(u => u.Id == CurrentUser.Id, CurrentUser);
 
             DatabaseService.TriggerUserUpdatedEvent();
 
-            // Ga terug naar de vorige pagina
             await Shell.Current.GoToAsync("..");
         }
-
     }
+
     public async void OnBackClicked(object sender, EventArgs e)
     {
-        // Navigate back to the UsersPage
         await Shell.Current.GoToAsync("..");
     }
+
     public async void OnDeleteClicked(object sender, EventArgs e)
     {
         if (CurrentUser != null)
@@ -91,13 +133,9 @@ public partial class EditUserPage : ContentPage
             if (confirmation)
             {
                 await DatabaseService.UsersCollection.DeleteOneAsync(u => u.Id == CurrentUser.Id);
-
                 await DisplayAlert("Succes", "Gebruiker verwijderd.", "OK");
-
                 await Shell.Current.GoToAsync("..");
             }
         }
     }
-
-
 }

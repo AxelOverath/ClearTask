@@ -2,7 +2,10 @@
 using ClearTask.Models;
 using MongoDB.Bson;
 using CustomTag = ClearTask.Models.Tag;
+using MongoDB.Driver.GridFS;
 using System.Text.Json;
+
+using MongoDB.Driver.Linq;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -13,37 +16,59 @@ namespace ClearTask.Data
         private static IMongoCollection<User> userCollection;
         private static CancellationTokenSource _cts = new();
 
+        private static GridFSBucket gridFS;
+
+        public static event Action TasksUpdated;
         public static event Action UserUpdated;
+
         public static event Action SectorUpdated;
+
+        public static event Action TagUpdated;
+
 
         static DatabaseService()
         {
-            const string connectionUri = "mongodb://axeloverath:Lao1KgIFn9WJeofd@cleartask-shard-00-00.dcnmf.mongodb.net:27017,cleartask-shard-00-01.dcnmf.mongodb.net:27017,cleartask-shard-00-02.dcnmf.mongodb.net:27017/?ssl=true&replicaSet=atlas-ah0h9j-shard-0&authSource=admin&retryWrites=true&w=majority&appName=ClearTask";
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
+            var settings = MongoClientSettings.FromConnectionString(AppConfig.DbConnectionString);
 
-            string databaseName = "mongodbVSCodePlaygroundDB";
+            string databaseName = "ClearTaskDB";
             var client = new MongoClient(settings);
             var db = client.GetDatabase(databaseName);
+            gridFS = new GridFSBucket(db);
 
             taskCollection = db.GetCollection<Task_>("tasks");
             sectorCollection = db.GetCollection<Sector>("sectors");
             tagCollection = db.GetCollection<CustomTag>("tags");
             userCollection = db.GetCollection<User>("users");
+
+            StartTaskChangeListener(); // Start Change Stream bij opstarten
+
             StartUserChangedListener();
+
             StartSectorenChangedListener();
+
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
-
+        public static IMongoCollection<CustomTag> TagCollection => tagCollection;
+        public static IMongoCollection<Sector> SectorCollection => sectorCollection;
         public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);
         }
+
         public static IMongoCollection<User> UsersCollection
         {
             get { return userCollection; }
         }
+
         public static IMongoCollection<Sector> SectorsCollection
+
+        public static async Task InsertUserAsync(User user)
+        {
+            await userCollection.InsertOneAsync(user);
+        }
+
+        public static IMongoCollection<Sector> SectorCollection
         {
             get { return sectorCollection; }
         }
@@ -90,7 +115,7 @@ namespace ClearTask.Data
             return tags;
         }
 
-        public static async Task InsertUserAsync(User user)
+        public static async Task InsertTaskUserAsync(User user)
         {
             await userCollection.InsertOneAsync(user);
         }
@@ -108,26 +133,13 @@ namespace ClearTask.Data
         }
 
         // Method to populate related data for a task
-        public static async Task<Task_> GetTaskWithDetails(ObjectId taskId)
+        public static async Task<Task_> GetTaskWithDetails(ObjectId? taskId)
         {
             // Fetch the Task
             var task = await taskCollection.Find(t => t.Id == taskId).FirstOrDefaultAsync();
 
             if (task != null)
             {
-                // Populate 'assignedTo' (Handyman)
-                if (task.assignedTo != null)
-                {
-                    var handyman = await GetHandymanById(task.assignedTo);
-                    task.hassignedTo = handyman; // Assign the related Handyman object
-                }
-
-                // Populate 'sector' (Sector)
-                if (task.sector != null)
-                {
-                    var sector = await GetSectorById(task.sector);
-                    task.actualSector = sector; // Assign the related Sector object
-                }
 
                 // Populate 'taglist' (Tags)
                 if (task.tags != null && task.tags.Any())
@@ -139,11 +151,52 @@ namespace ClearTask.Data
 
                     Console.WriteLine($"Retrieved {task.taglist.Count} tags for Task {task.Id}"); // Debugging
                 }
-
             }
-
             return task;
         }
+
+        private static async void StartTaskChangeListener()
+        {
+            Console.WriteLine("Listening for task changes...");
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Task_>>()
+                .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                                change.OperationType == ChangeStreamOperationType.Update ||
+                                change.OperationType == ChangeStreamOperationType.Delete);
+
+            var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (await cursor.MoveNextAsync(_cts.Token))
+                    {
+                        foreach (var change in cursor.Current)
+                        {
+                            Console.WriteLine($"Database change detected: {change.OperationType}");
+                            TasksUpdated?.Invoke();
+                        }
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Change stream listening stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in change stream listener: {ex.Message}");
+                }
+            });
+        }
+
+
+
+        public static void StopListening()
+        {
+            _cts.Cancel();
+        }
+
 
     private static async void StartUserChangedListener()
     {
@@ -178,10 +231,6 @@ namespace ClearTask.Data
                 Console.WriteLine($"Error in change stream listener: {ex.Message}");
             }
         });
-        }
-        public static void StopListening()
-        {
-            _cts.Cancel();
         }
 
         public static void TriggerUserUpdatedEvent()
@@ -291,6 +340,84 @@ namespace ClearTask.Data
             };
 
             var updatedSector = await sectorCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
+        public static async Task<List<CustomTag>> GetTagsAsync()
+        {
+            return await tagCollection.Find(new BsonDocument()).ToListAsync();
+        }
+
+        public static async Task<CustomTag> GetTagByIdAsync(ObjectId id)
+        {
+            return await tagCollection.Find(tag => tag.Id == id).FirstOrDefaultAsync();
+        }
+
+        public static async Task SaveTagAsync(CustomTag tag)
+        {
+            await tagCollection.InsertOneAsync(tag);
+        }
+
+        public static async Task UpdateTagAsync(CustomTag tag)
+        {
+            await tagCollection.ReplaceOneAsync(t => t.Id == tag.Id, tag);
+        }
+
+        public static async Task DeleteTagAsync(ObjectId id)
+        {
+            await tagCollection.DeleteOneAsync(t => t.Id == id);
+        }
+        public static void TriggerTagUpdatedEvent()
+        {
+            TagUpdated?.Invoke();
+        }
+
+        /// <summary>
+        /// Haal het aantal taken per status op.
+        /// </summary>
+        public static async Task<Dictionary<Models.TaskStatus, int>> GetTaskCountByStatus()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t => t.status)
+                        .ToDictionary(g => g.Key, g => g.Count());
+        }
+
+        /// <summary>
+        /// Haal het aantal taken per sector op.
+        /// </summary>
+        public static async Task<Dictionary<string, int>> GetTaskCountPerSector()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+            var sectors = await taskCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t => t.sector)
+                        .ToDictionary(
+                            g => sectors.FirstOrDefault(s => s.Id == g.Key)?.title ?? "Onbekend",
+                            g => g.Count()
+                        );
+        }
+
+        /// <summary>
+        /// Haal het aantal voltooide taken op.
+        /// </summary>
+        public static async Task<int> GetCompletedTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Completed);
+        }
+
+        /// <summary>
+        /// Haal het aantal lopende taken op.
+        /// </summary>
+        public static async Task<int> GetOngoingTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.InProgress);
+        }
+
+        /// <summary>
+        /// Haal het aantal openstaande taken op.
+        /// </summary>
+        public static async Task<int> GetOpenTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Pending);
         }
 
     }

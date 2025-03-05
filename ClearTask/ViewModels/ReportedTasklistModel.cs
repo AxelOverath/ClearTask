@@ -8,13 +8,13 @@ using MongoDB.Driver;
 
 namespace ClearTask.ViewModels;
 
-public class TaskListViewModel : INotifyPropertyChanged
+public class ReportedTasklistModel : INotifyPropertyChanged
 {
     private ObservableCollection<Task_> _tasks;
 
     public ObservableCollection<Task_> Tasks
     {
-        get => _tasks;
+        get => new ObservableCollection<Task_>(_tasks?.Where(task => task.createdBy == UserStorage.Id) ?? new List<Task_>());
         set
         {
             _tasks = value;
@@ -22,13 +22,14 @@ public class TaskListViewModel : INotifyPropertyChanged
         }
     }
 
+
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public TaskListViewModel()
+    public ReportedTasklistModel()
     {
         LoadTasks();
         DatabaseService.TasksUpdated += async () => await LoadTasks(); // **Luisteren naar DB updates**
