@@ -48,7 +48,7 @@ namespace ClearTask.Views
         {
             try
             {
-                var sectors = await DatabaseService.SectorCollection.Find(_ => true).ToListAsync();
+                var sectors = await DatabaseService.SectorsCollection.Find(_ => true).ToListAsync();
 
                 if (sectors != null && sectors.Any())
                 {
@@ -214,12 +214,16 @@ namespace ClearTask.Views
             {
                 // Show elements specific to the Manager role
                 DeadlinePicker.IsVisible = true;
-                AdminTicketCheckbox.IsVisible = true;
                 UserPicker.IsVisible = true;
                 this.FindByName<Label>("DeadlineLabel").IsVisible = true;
                 this.FindByName<Label>("UserPickerLabel").IsVisible = true;
                 this.FindByName<StackLayout>("AdminTicketStack").IsVisible = true;
             }
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            SetManagerVisibility(null, EventArgs.Empty);
         }
 
 

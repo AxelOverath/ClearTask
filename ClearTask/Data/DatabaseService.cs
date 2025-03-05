@@ -61,14 +61,12 @@ namespace ClearTask.Data
             get { return userCollection; }
         }
 
-        public static IMongoCollection<Sector> SectorsCollection
-
         public static async Task InsertUserAsync(User user)
         {
             await userCollection.InsertOneAsync(user);
         }
 
-        public static IMongoCollection<Sector> SectorCollection
+        public static IMongoCollection<Sector> SectorsCollection
         {
             get { return sectorCollection; }
         }
@@ -387,14 +385,16 @@ namespace ClearTask.Data
         public static async Task<Dictionary<string, int>> GetTaskCountPerSector()
         {
             var tasks = await taskCollection.AsQueryable().ToListAsync();
-            var sectors = await taskCollection.AsQueryable().ToListAsync();
+            var sectors = await sectorCollection.AsQueryable().ToListAsync();
 
-            return tasks.GroupBy(t => t.sector)
+            return tasks.GroupBy(t =>
+                        sectors.FirstOrDefault(s => s.Id == t.sector)?.name ?? "Onbekend")
                         .ToDictionary(
-                            g => sectors.FirstOrDefault(s => s.Id == g.Key)?.title ?? "Onbekend",
+                            g => g.Key,
                             g => g.Count()
                         );
         }
+
 
         /// <summary>
         /// Haal het aantal voltooide taken op.

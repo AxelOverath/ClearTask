@@ -36,7 +36,8 @@
                                           CommandParameter="{Binding}"/>
                         </Frame.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="{Binding name}" FontSize="16" TextColor="White" HorizontalOptions="Center"/>
+                            <Label Text="{Binding username}" FontSize="16" TextColor="White" HorizontalOptions="Center"/>
+                            <Label Text="{Binding userRole}" FontSize="14" TextColor="LightGray" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>
