@@ -36,6 +36,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
+
 	</PropertyGroup>
 
 
@@ -167,7 +169,11 @@
 
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+
 	  <MauiXaml Update="Views\AdminTicketList.xaml">
+
+	  <MauiXaml Update="Views\TaskDetail.xaml">
+
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\TaskList.xaml">

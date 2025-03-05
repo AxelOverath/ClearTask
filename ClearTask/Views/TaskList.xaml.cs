@@ -1,6 +1,8 @@
 using ClearTask.Models;
 using System.Linq;  // For LINQ operations (e.g., FirstOrDefault)
 using ClearTask.ViewModels;
+using ClearTask.Models;
+namespace ClearTask.Views;
 
 namespace ClearTask.Views
 {
@@ -26,6 +28,14 @@ namespace ClearTask.Views
                 // Navigate to TaskDetailPage and pass taskId as a query parameter
                 await Shell.Current.GoToAsync($"{nameof(TaskDetailPage)}?taskId={selectedTask.Id}");
             }
+        }
+    }
+}
+    private async void OnTaskTapped(object sender, EventArgs e)
+    {
+        if (sender is View view && view.BindingContext is Task_ selectedTask)
+        {
+            await Navigation.PushAsync(new TaskDetail(selectedTask));
         }
     }
 }
