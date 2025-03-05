@@ -61,6 +61,13 @@
                 <!-- Divider -->
                 <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
 
+                <!-- Task Image -->
+                <Image Source="{Binding TaskImageSource}" 
+       HeightRequest="200" 
+       Aspect="AspectFit" 
+       HorizontalOptions="Center" />
+
+
                 <!-- Deadline -->
                 <Label Text="Deadline" 
                        FontSize="18" 

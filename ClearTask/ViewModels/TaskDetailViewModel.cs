@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 using ClearTask.Models;
 using ClearTask.Data; // Ensure this namespace contains DatabaseService
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Threading.Tasks;
 
 namespace ClearTask.ViewModels
 {
@@ -19,6 +21,51 @@ namespace ClearTask.ViewModels
             {
                 _task = value;
                 OnPropertyChanged();
+                LoadTaskImageAsync(); // Load image when task is set
+            }
+        }
+
+        private byte[] _taskImageData;
+        public byte[] TaskImageData
+        {
+            get => _taskImageData;
+            set
+            {
+                _taskImageData = value;
+                OnPropertyChanged(nameof(TaskImageSource));
+            }
+        }
+
+        public ImageSource TaskImageSource => ConvertToImageSource(TaskImageData);
+
+        private ImageSource ConvertToImageSource(byte[] imageData)
+        {
+            if (imageData == null || imageData.Length == 0)
+                return "fallback_image.png"; // Set a default/fallback image if null
+            return ImageSource.FromStream(() => new MemoryStream(imageData));
+        }
+
+        // Load Image Data from MongoDB
+        private async void LoadTaskImageAsync()
+        {
+            try
+            {
+                var taskFromDb = await DatabaseService.TaskCollection
+                    .Find(t => t.Id == Task.Id)
+                    .FirstOrDefaultAsync();
+
+                if (taskFromDb != null && taskFromDb.photo != null)
+                {
+                    TaskImageData = taskFromDb.photo;
+                }
+                else
+                {
+                    TaskImageData = null; // No image available
+                }
+            }
+            catch (Exception)
+            {
+                TaskImageData = null; // Handle errors gracefully
             }
         }
 
@@ -70,7 +117,7 @@ namespace ClearTask.ViewModels
         {
             Task = task;
 
-            // For Assigned User
+            // Load Assigned User
             if (Task.assignedTo != ObjectId.Empty)
             {
                 IsAssignedUserVisible = true;
@@ -81,7 +128,7 @@ namespace ClearTask.ViewModels
                 IsAssignedUserVisible = false;
             }
 
-            // For Sector
+            // Load Sector
             if (Task.sector != ObjectId.Empty)
             {
                 IsSectorVisible = true;
@@ -101,7 +148,7 @@ namespace ClearTask.ViewModels
                     .Find(u => u.Id == Task.assignedTo)
                     .FirstOrDefaultAsync();
 
-                AssignedUserName = user != null ? user.username : string.Empty;
+                AssignedUserName = user != null ? user.username : "Unknown User";
             }
             catch (Exception)
             {
@@ -117,7 +164,7 @@ namespace ClearTask.ViewModels
                     .Find(s => s.Id == Task.sector)
                     .FirstOrDefaultAsync();
 
-                SectorName = sector != null ? sector.name : string.Empty;
+                SectorName = sector != null ? sector.name : "Unknown Sector";
             }
             catch (Exception)
             {

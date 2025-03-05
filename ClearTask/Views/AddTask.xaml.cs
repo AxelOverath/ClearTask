@@ -117,7 +117,7 @@ namespace ClearTask.Views
             {
                 title = title,
                 description = description,
-                photo = uploadedImageData != null ? $"{uploadedImageData}" : "null", // This now holds the binary data from the image
+                photo = uploadedImageData != null ? uploadedImageData : null, // This now holds the binary data from the image
                 tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
                 taglist = tagList,  // Assign the generated tag list
                 deadline = DeadlinePicker.Date,
