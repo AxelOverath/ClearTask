@@ -146,6 +146,9 @@
 
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\TaskDetail.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\TaskList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

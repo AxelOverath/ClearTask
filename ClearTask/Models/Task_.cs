@@ -9,7 +9,9 @@ namespace ClearTask.Models
         public ObjectId Id { get; set; }
         public string? title { get; set; }
         public string? description { get; set; }
+
         public string? photo { get; set; }
+       // public byte[]? photo { get; set; } // Changed from string to byte[]
         public List<ObjectId>? tags { get; set; }
         public List<Tag>? taglist { get; set; }
         public DateTime? deadline { get; set; }

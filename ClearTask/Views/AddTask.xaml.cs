@@ -17,6 +17,7 @@ namespace ClearTask.Views
     {
         private readonly TaskListViewModel _viewModel;
         private ObjectId? uploadedImageId = null;
+        private byte[]? uploadedImageData = null;
 
         public AddTask()
         {
@@ -61,6 +62,34 @@ namespace ClearTask.Views
             }
         }
 
+        private async void OnPickImageClicked(object sender, EventArgs e)
+        {
+            // Present options to the user
+            string action = await DisplayActionSheet("Select Photo Source", "Cancel", null, "Take Photo", "Pick from Gallery");
+
+            FileResult photoResult = null;
+            if (action == "Take Photo")
+            {
+                // Capture a new photo using the camera
+                photoResult = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = "Take a Photo" });
+            }
+            else if (action == "Pick from Gallery")
+            {
+                // Select a photo from the device's gallery
+                photoResult = await MediaPicker.PickPhotoAsync(new MediaPickerOptions { Title = "Select a Photo" });
+            }
+
+            if (photoResult != null)
+            {
+                using var stream = await photoResult.OpenReadAsync();
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                uploadedImageData = memoryStream.ToArray();
+                await DisplayAlert("Success", "Image loaded successfully.", "OK");
+            }
+        }
+
+
         private async void OnSaveTaskClicked(object sender, EventArgs e)
         {
             // Ensure title and description are never null
@@ -88,7 +117,7 @@ namespace ClearTask.Views
             {
                 title = title,
                 description = description,
-                photo = "https://example.com/lucas.jpg", // Save Image ID if needed
+                photo = uploadedImageData != null ? $"{uploadedImageData}" : "null", // This now holds the binary data from the image
                 tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
                 taglist = tagList,  // Assign the generated tag list
                 deadline = DeadlinePicker.Date,

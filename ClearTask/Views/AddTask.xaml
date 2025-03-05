@@ -48,6 +48,14 @@
                                 HeightRequest="120" />
                     </Frame>
 
+                    <Button Text="Pick Image" 
+                            FontSize="18" 
+                            Padding="15" 
+                            BackgroundColor="#2196F3" 
+                            TextColor="White" 
+                            CornerRadius="10"
+                    Clicked="OnPickImageClicked" />
+
                     <!-- Deadline Picker (Hidden) -->
                     <Label Text="Set Deadline" 
                            FontSize="16" 
@@ -63,6 +71,7 @@
                            FontAttributes="Bold" />
                     <Picker x:Name="SectorPicker" 
                             Title="Choose a Sector" />
+                    
 
                     <!-- User Picker (Hidden) -->
                     <Label Text="Assign to User" 
