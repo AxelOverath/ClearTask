@@ -24,7 +24,7 @@ namespace ClearTask.Views
             if (selectedTask != null)
             {
                 // Navigate to TaskDetailPage and pass taskId as a query parameter
-                await Shell.Current.GoToAsync($"{nameof(TaskDetailPage)}?taskId={selectedTask.Id}");
+                await Shell.Current.GoToAsync($"{nameof(TaskDetailPageEdit)}?taskId={selectedTask.Id}");
             }
         }
     }
