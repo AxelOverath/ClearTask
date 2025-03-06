@@ -60,7 +60,8 @@
                     <Label Text="Set Deadline" 
                            FontSize="16" 
                            FontAttributes="Bold" 
-                           IsVisible="False" />
+                           IsVisible="False"
+                           x:Name="DeadlineLabel"/>
                     <DatePicker x:Name="DeadlinePicker" 
                                 Format="D" 
                                 IsVisible="False" />
@@ -77,7 +78,8 @@
                     <Label Text="Assign to User" 
                            FontSize="16" 
                            FontAttributes="Bold" 
-                           IsVisible="False" />
+                           IsVisible="False" 
+                           x:Name="UserPickerLabel" />
                     <Picker x:Name="UserPicker" 
                             Title="Select a User" 
                             IsVisible="False" />
@@ -85,8 +87,9 @@
                     <!-- Admin Ticket Option (Hidden) -->
                     <StackLayout Orientation="Horizontal" 
                                  Spacing="10" 
-                                 IsVisible="False">
-                        <CheckBox x:Name="AdminTicketCheckbox" />
+                                 IsVisible="False"
+                                 x:Name="AdminTicketStack">
+                        <CheckBox x:Name="AdminTicketCheckbox"/>
                         <Label Text="Admin ticket?" 
                                FontSize="16" 
                                VerticalOptions="Center" />
