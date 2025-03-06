@@ -2,6 +2,7 @@
 ﻿using ClearTask.Views;
 using ClearTask.Data;
 using ClearTask.Models;
+using ClearTask.ViewModels;
 
 namespace ClearTask
 {
@@ -21,6 +22,8 @@ namespace ClearTask
             Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
             Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
             Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
+            Routing.RegisterRoute(nameof(TaskDetailViewModel), typeof(TaskDetailViewModel));
+            Routing.RegisterRoute(nameof(TaskDetailPageEdit), typeof(TaskDetailPageEdit));
             Routing.RegisterRoute("Sectoren", typeof(SectorsOverviewPage));
             GoToLogin();
         }
