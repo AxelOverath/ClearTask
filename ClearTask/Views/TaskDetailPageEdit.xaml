@@ -7,18 +7,43 @@
     <VerticalStackLayout Padding="20">
         <Label Text="Taak Details" FontSize="24" HorizontalOptions="Center" TextColor="Blue"/>
 
+        <!-- Titel -->
         <Label Text="Titel" FontSize="18" />
-        <Entry Text="{Binding Task.title}" Placeholder="Titel" />
+        <Entry Text="{Binding Task.title, Mode=TwoWay}" Placeholder="Titel" />
 
+        <!-- Beschrijving -->
         <Label Text="Beschrijving" FontSize="18" />
-        <Editor Text="{Binding Task.description}" Placeholder="Beschrijving" HeightRequest="100" />
+        <Editor Text="{Binding Task.description, Mode=TwoWay}" Placeholder="Beschrijving" HeightRequest="100" />
 
+        <!-- Deadline -->
         <Label Text="Deadline" FontSize="18" />
-        <DatePicker Date="{Binding Task.deadline}" />
+        <DatePicker Date="{Binding Task.deadline, Mode=TwoWay}" />
 
-        <Label Text="Status" FontSize="18" />
-        <Picker Title="Selecteer status" ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding Task.status}" />
+        <!-- Sector Picker -->
+        <!-- Sector Picker -->
+        <Label Text="Select Sector" FontSize="16" FontAttributes="Bold" />
+        <Picker Title="Choose a Sector" 
+        x:Name="SectorPicker"
+        ItemsSource="{Binding AvailableSectors}" 
+        ItemDisplayBinding="{Binding name}"/>
+        <!-- Hier toon je de naam -->
+        
 
+
+            <!-- User Picker -->
+        <Label Text="Assign to User" FontSize="16" FontAttributes="Bold" />
+        <Picker Title="Select a User" x:Name="UserPicker"
+                ItemsSource="{Binding AvailableUsers}" 
+                ItemDisplayBinding="{Binding username}"
+                SelectedItem="{Binding Task.AssignedUser, Mode=TwoWay}" />
+
+        <!-- Admin Ticket Option -->
+        <StackLayout Orientation="Horizontal" Spacing="10">
+            <CheckBox IsChecked="{Binding Task.IsAdminTicket, Mode=TwoWay}" />
+            <Label Text="Admin ticket?" FontSize="16" VerticalOptions="Center" />
+        </StackLayout>
+
+        <!-- Beschikbare Tags -->
         <Label Text="Beschikbare Tags" FontSize="18" />
         <CollectionView ItemsSource="{Binding AvailableTags}" SelectionMode="None" ItemsLayout="HorizontalList">
             <CollectionView.ItemTemplate>
@@ -30,6 +55,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!-- Geselecteerde Tags -->
         <Label Text="Geselecteerde Tags" FontSize="18" />
         <CollectionView ItemsSource="{Binding Task.taglist}" SelectionMode="None" ItemsLayout="HorizontalList">
             <CollectionView.ItemTemplate>
@@ -41,8 +67,12 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White" CornerRadius="10" />
 
+
+
+
+        <!-- Opslaan en Terug -->
+        <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White" CornerRadius="10" />
         <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White" CornerRadius="10" />
     </VerticalStackLayout>
 
