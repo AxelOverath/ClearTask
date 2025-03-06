@@ -164,7 +164,8 @@ namespace ClearTask.Data
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Task_>>()
                 .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
                                 change.OperationType == ChangeStreamOperationType.Update ||
-                                change.OperationType == ChangeStreamOperationType.Delete);
+                                change.OperationType == ChangeStreamOperationType.Delete ||
+                            change.OperationType == ChangeStreamOperationType.Modify);
 
             var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
 
@@ -202,12 +203,13 @@ namespace ClearTask.Data
 
     private static async void StartUserChangedListener()
     {
-        Console.WriteLine("Listening for task changes...");
+        Console.WriteLine("Listening for Users changes...");
 
         var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<User>>()
             .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
                             change.OperationType == ChangeStreamOperationType.Update ||
-                            change.OperationType == ChangeStreamOperationType.Delete);
+                            change.OperationType == ChangeStreamOperationType.Delete || 
+                            change.OperationType == ChangeStreamOperationType.Modify);
 
         var cursor = await userCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
 
@@ -248,7 +250,7 @@ namespace ClearTask.Data
         //sectoren
         private static async void StartSectorenChangedListener()
         {
-            Console.WriteLine("Listening for task changes...");
+            Console.WriteLine("Listening for Sector changes...");
 
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Sector>>()
                 .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||

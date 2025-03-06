@@ -141,13 +141,13 @@ public partial class TaskDetailPageEdit : ContentPage, INotifyPropertyChanged
         {
             // Opslaan: vervang Task in de database
             await DatabaseService.TaskCollection.ReplaceOneAsync(t => t.Id == Task.Id, Task);
-            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync("//tasks");
         }
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("tasks");
     }
 
     private async void LoadSectors()

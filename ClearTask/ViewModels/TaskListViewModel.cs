@@ -38,7 +38,29 @@ public class TaskListViewModel : INotifyPropertyChanged
     {
         try
         {
-            var tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
+            List<Task_> tasksFromDb;
+
+            // If user role is Handyman, load tasks only from their sector
+            if (UserStorage.UserRole == Role.Handyman)
+            {
+                var allSectors = await DatabaseService.SectorCollection.Find(_ => true).ToListAsync();
+                var userSector = allSectors.FirstOrDefault(sector => sector.handymanIds.Contains(UserStorage.Id));
+
+                if (userSector == null)
+                {
+                    Console.WriteLine("User sector not found.");
+                    Tasks = new ObservableCollection<Task_>();
+                    return;
+                }
+
+                tasksFromDb = await DatabaseService.TaskCollection
+                                    .Find(task => task.sector == userSector.Id)
+                                    .ToListAsync();
+            }
+            else // If not Handyman, load all tasks
+            {
+                tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
+            }
 
             var detailedTasks = new List<Task_>();
 
