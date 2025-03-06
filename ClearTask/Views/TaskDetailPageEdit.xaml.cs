@@ -31,6 +31,9 @@ public partial class TaskDetailPageEdit : ContentPage, INotifyPropertyChanged
     public ObservableCollection<CustomTag> SelectedTags { get; set; } = new ObservableCollection<CustomTag>();
 
     public TaskDetailPageEdit(Task_ task)
+
+
+
     {
         InitializeComponent();
         Task = task;
