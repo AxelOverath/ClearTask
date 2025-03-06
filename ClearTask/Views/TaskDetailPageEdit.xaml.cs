@@ -19,6 +19,7 @@ public partial class TaskDetailPageEdit : ContentPage
     public ObservableCollection<CustomTag> AvailableTags { get; set; } = new();
     public ObservableCollection<CustomTag> SelectedTags { get; set; } = new();
 
+
     public TaskDetailPageEdit()
     {
         InitializeComponent();

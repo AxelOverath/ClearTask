@@ -156,7 +156,8 @@
                         TextColor="White"
                         HeightRequest="50"
                         CornerRadius="10"
-                        Clicked="OnStartButtonClicked"/>
+                        Clicked="OnStartButtonClicked"
+                        IsVisible="{Binding IsHandyman}"/>
 
             </VerticalStackLayout>
         </ScrollView>

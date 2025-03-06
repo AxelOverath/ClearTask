@@ -31,8 +31,15 @@
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
             <!-- Opslaan knop (Altijd zichtbaar, alleen niet bewerkbaar als user niet mag editen) -->
-            <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"
-                    CornerRadius="10" Padding="10" WidthRequest="100" IsEnabled="{Binding IsEditable}"/>
+            <Button Text="Opslaan" 
+                    Clicked="OnSaveClicked" 
+                    BackgroundColor="Green" 
+                    TextColor="White"
+                    CornerRadius="10" 
+                    Padding="10" 
+                    WidthRequest="100" 
+                    IsEnabled="{Binding IsEditable}"
+                    IsVisible="{Binding IsAdmin}"/>
 
             <!-- Terug knop -->
             <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White"
