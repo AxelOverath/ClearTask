@@ -9,14 +9,6 @@
     Shell.NavBarIsVisible="False"
     BackgroundColor="#f0f8ff">
 
-    <TabBar Shell.TabBarBackgroundColor="#1e5631" Shell.TabBarUnselectedColor="#d1e8e2" Shell.TabBarForegroundColor="#a8ffb2" Shell.TabBarTitleColor="White">
-        <ShellContent
-            ContentTemplate="{DataTemplate local:TaskList}"
-            Route="Login"
-            Title="Tasks"/>
-        <ShellSection Title="User Management">
-            <ShellContent Title="Users" Route="users" ContentTemplate="{DataTemplate views:UsersPage}" />
-            <ShellContent Title="Add User" Route="addUser" ContentTemplate="{DataTemplate views:AddUserPage}" />
-        </ShellSection>
-    </TabBar>
+    <ShellContent Route="Login" ContentTemplate="{DataTemplate local:Login}" />
+    
 </Shell>

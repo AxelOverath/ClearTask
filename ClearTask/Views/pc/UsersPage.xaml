@@ -1,21 +1,57 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClearTask.Views.Pc"
              x:Class="ClearTask.Views.Pc.UsersPage"
-             Title="Gebruikers"
+
+    Title="Gebruikers"
              BackgroundColor="White">
 
     <VerticalStackLayout Padding="20">
         <Label Text="Gebruikersbeheer" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
 
-        <ListView x:Name="UsersList" BackgroundColor="LightGray">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Name}" Detail="{Binding Role}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <!-- Zoek- en filterbalk naast elkaar -->
+        <HorizontalStackLayout Spacing="10">
+            <SearchBar x:Name="SearchBar" Placeholder="Zoek gebruiker..." TextChanged="OnSearchTextChanged" WidthRequest="200"/>
+            <Picker Title="Filter op rol" 
+        ItemsSource="{Binding Roles}" 
+        SelectedIndexChanged="OnRoleFilterChanged"
+        WidthRequest="150"
+        IsVisible="{Binding IsRoleFilterVisible}"/>
 
-        <Button Text="Nieuwe gebruiker toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserClicked"/>
+
+        </HorizontalStackLayout>
+
+        <!-- Horizontale scroll voor gebruikers -->
+        <CollectionView ItemsSource="{Binding FilteredUsers}" HeightRequest="150">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Horizontal" Span="1"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" BackgroundColor="MediumSeaGreen" CornerRadius="10" Margin="5"
+                   WidthRequest="200" HeightRequest="120" HasShadow="True">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:UsersPage}}, Path=UserClickedCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Frame.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="{Binding username}" FontSize="16" TextColor="White" HorizontalOptions="Center"/>
+                            <Label Text="{Binding userRole}" FontSize="14" TextColor="LightGray" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <Button Text="Nieuwe gebruiker toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserClicked" IsVisible="{Binding IsRoleFilterVisible}"/>
     </VerticalStackLayout>
+
+
+
+
+
+
+
 </ContentPage>

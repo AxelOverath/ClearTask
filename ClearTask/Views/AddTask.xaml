@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.AddTask"
+             BackgroundColor="#F9F9F9"
+             Title="Add New Task">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid Padding="20">
+                <StackLayout Spacing="20">
+
+                    <!-- Header -->
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Button Text="Back" 
+                                FontSize="16" 
+                                Padding="5" 
+                                TextColor="Black"
+                                BackgroundColor="#E0E0E0" 
+                                CornerRadius="10"
+                                Clicked="OnBackButtonClicked" />
+                        <Label Text="Add New Task" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" 
+                               Grid.Column="1" />
+                    </Grid>
+
+                    <!-- Task Title -->
+                    <Frame CornerRadius="10" 
+                           HasShadow="True" 
+                           Padding="10" 
+                           BackgroundColor="White">
+                        <Entry x:Name="tasktitle" 
+                               Placeholder="Task Title" 
+                               FontSize="18" />
+                    </Frame>
+
+                    <!-- Task Description -->
+                    <Frame CornerRadius="10" 
+                           HasShadow="True" 
+                           Padding="10" 
+                           BackgroundColor="White">
+                        <Editor x:Name="taskdescription" 
+                                Placeholder="Task Description" 
+                                FontSize="16" 
+                                HeightRequest="120" />
+                    </Frame>
+
+                    <Button Text="Pick Image" 
+                            FontSize="18" 
+                            Padding="15" 
+                            BackgroundColor="#2196F3" 
+                            TextColor="White" 
+                            CornerRadius="10"
+                    Clicked="OnPickImageClicked" />
+
+                    <!-- Deadline Picker (Hidden) -->
+                    <Label Text="Set Deadline" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           IsVisible="False"
+                           x:Name="DeadlineLabel"/>
+                    <DatePicker x:Name="DeadlinePicker" 
+                                Format="D" 
+                                IsVisible="False" />
+
+                    <!-- Sector Picker -->
+                    <Label Text="Select Sector" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker x:Name="SectorPicker" 
+                            Title="Choose a Sector" />
+                    
+
+                    <!-- User Picker (Hidden) -->
+                    <Label Text="Assign to User" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           IsVisible="False" 
+                           x:Name="UserPickerLabel" />
+                    <Picker x:Name="UserPicker" 
+                            Title="Select a User" 
+                            IsVisible="False" />
+
+                    <!-- Admin Ticket Option (Hidden) -->
+                    <StackLayout Orientation="Horizontal" 
+                                 Spacing="10" 
+                                 IsVisible="False"
+                                 x:Name="AdminTicketStack">
+                        <CheckBox x:Name="AdminTicketCheckbox"/>
+                        <Label Text="Admin ticket?" 
+                               FontSize="16" 
+                               VerticalOptions="Center" />
+                    </StackLayout>
+
+                    <!-- Save Button -->
+                    <Button Text="Save Task" 
+                            FontSize="18" 
+                            Padding="15" 
+                            BackgroundColor="#4CAF50" 
+                            TextColor="White" 
+                            CornerRadius="10"
+                            Clicked="OnSaveTaskClicked" />
+
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
