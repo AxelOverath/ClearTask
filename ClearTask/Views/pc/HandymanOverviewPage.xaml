@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClearTask.Views.Pc"
+             x:Class="ClearTask.Views.Pc.HandymanOverviewPage"
+             Title="Handyman Overview Sector">
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <!-- Page Title -->
+        <Label Text="Handyman Overview" 
+           FontSize="28" 
+           FontAttributes="Bold" 
+           TextColor="#2C3E50" 
+           HorizontalOptions="Center" />
+
+        <!-- Sector List -->
+        <CollectionView ItemsSource="{Binding HandymanSector}" 
+                    SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" 
+                       BackgroundColor="#27AE60" 
+                       CornerRadius="12" 
+                       Margin="5" 
+                       HasShadow="True">
+
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:HandymanOverviewPage}}}"
+                                              CommandParameter="{Binding}" />
+                        </Frame.GestureRecognizers>
+
+                        <!-- Sector Item Layout -->
+                        <Grid ColumnDefinitions="Auto, *, Auto, Auto" 
+                          HorizontalOptions="FillAndExpand" 
+                          VerticalOptions="Center">
+
+                            <!-- Sector Name -->
+                            <Label Text="{Binding username}" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Start" 
+                               VerticalOptions="Center" 
+                               Grid.Column="0" />
+
+                            <!-- Delete Button -->
+                            <Button Text="🗑️" 
+                                BackgroundColor="Transparent" 
+                                TextColor="#FF6B6B" 
+                                FontSize="20"
+                                Clicked="DeleteHandymanClicked" 
+                                Padding="5" 
+                                HorizontalOptions="End" 
+                                VerticalOptions="Center" 
+                                Grid.Column="1" 
+                                CommandParameter="{Binding Id}" />
+                        </Grid>
+
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Grid ColumnDefinitions="*, *" 
+            HorizontalOptions="FillAndExpand" 
+            VerticalOptions="Center">
+            <Picker Title="Select a handyman to add"
+                ItemsSource="{Binding AllHandyman}"
+                SelectedItem="{Binding SelectedHandyman, Mode=TwoWay}"
+                ItemDisplayBinding="{Binding username}" 
+                x:Name="HandymanPicker" Grid.Column="0"
+                    />
+
+            <!-- Create New Sector Button -->
+            <Button Text="Add new handyman" 
+                FontSize="18" 
+                BackgroundColor="#2ECC71" 
+                TextColor="White" 
+                CornerRadius="10" 
+                HeightRequest="50"
+                Clicked="OnAddHandymanClicked" Grid.Column="1"/>
+        </Grid>
+
+    </VerticalStackLayout>
+</ContentPage>

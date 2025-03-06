@@ -23,6 +23,7 @@ namespace ClearTask
             Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
             Routing.RegisterRoute(nameof(TaskDetailPage), typeof(TaskDetailPage));
             Routing.RegisterRoute(nameof(TaskDetailPageEdit), typeof(TaskDetailPageEdit));
+            Routing.RegisterRoute("Sectoren", typeof(SectorsOverviewPage));
             GoToLogin();
         }
 
@@ -84,6 +85,12 @@ namespace ClearTask
                     ContentTemplate = new DataTemplate(typeof(AdminTicketList)),
                     Route = "adminticketlist"
                 });
+                adminSection.Items.Add(new ShellContent
+                {
+                    Title = "Sector List",
+                    ContentTemplate = new DataTemplate(typeof(SectorsOverviewPage)),
+                    Route = "Sectoren"
+                });
 
                 tabBar.Items.Add(adminSection);
             }
@@ -105,13 +112,6 @@ namespace ClearTask
                     Title = "Gebruikers",
                     ContentTemplate = new DataTemplate(typeof(UsersPage)),
                     Route = "users"
-                });
-
-                managerSection.Items.Add(new ShellContent
-                {
-                    Title = "adminticketlist",
-                    ContentTemplate = new DataTemplate(typeof(AdminTicketList)),
-                    Route = "adminticketlist"
                 });
 
 

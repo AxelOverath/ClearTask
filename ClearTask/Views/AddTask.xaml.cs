@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+ using System.Runtime.InteropServices;
 using ClearTask.Data;
 using ClearTask.Models;
 using ClearTask.ViewModels;
@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using MongoDB.Driver;
+using Tag = ClearTask.Models.Tag;
 
 namespace ClearTask.Views
 {
@@ -15,68 +17,109 @@ namespace ClearTask.Views
     {
         private readonly TaskListViewModel _viewModel;
         private ObjectId? uploadedImageId = null;
+        private byte[]? uploadedImageData = null;
 
         public AddTask()
         {
             InitializeComponent();
             _viewModel = new TaskListViewModel();
             BindingContext = _viewModel;
+            LoadUsers();
+            LoadSectors();
         }
-
-        //  Handle Image Selection & Upload
-        private async void OnPickImageClicked(object sender, EventArgs e)
+        private async void LoadUsers()
         {
             try
             {
-                var result = await FilePicker.PickAsync(new PickOptions
-                {
-                    FileTypes = FilePickerFileType.Images,
-                    PickerTitle = "Select an image"
-                });
+                var users = await DatabaseService.UsersCollection.Find(user => user.userRole == Role.Handyman ).ToListAsync();
 
-                if (result != null)
+                if (users != null && users.Any())
                 {
-                    using (var stream = await result.OpenReadAsync())
-                    {
-                        // Upload logic if needed
-                    }
-
-                    await DisplayAlert("Success", "Image uploaded successfully!", "OK");
+                    UserPicker.ItemsSource = users;
+                    UserPicker.ItemDisplayBinding = new Binding("username");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to pick image: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Failed to load users: {ex.Message}", "OK");
+            }
+        }
+        private async void LoadSectors()
+        {
+            try
+            {
+                var sectors = await DatabaseService.SectorsCollection.Find(_ => true).ToListAsync();
+
+                if (sectors != null && sectors.Any())
+                {
+                    SectorPicker.ItemsSource = sectors;
+                    SectorPicker.ItemDisplayBinding = new Binding("name");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load sectors: {ex.Message}", "OK");
             }
         }
 
-        //  Save Task with Image ID
+        private async void OnPickImageClicked(object sender, EventArgs e)
+        {
+            // Present options to the user
+            string action = await DisplayActionSheet("Select Photo Source", "Cancel", null, "Take Photo", "Pick from Gallery");
+
+            FileResult photoResult = null;
+            if (action == "Take Photo")
+            {
+                // Capture a new photo using the camera
+                photoResult = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = "Take a Photo" });
+            }
+            else if (action == "Pick from Gallery")
+            {
+                // Select a photo from the device's gallery
+                photoResult = await MediaPicker.PickPhotoAsync(new MediaPickerOptions { Title = "Select a Photo" });
+            }
+
+            if (photoResult != null)
+            {
+                using var stream = await photoResult.OpenReadAsync();
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                uploadedImageData = memoryStream.ToArray();
+                await DisplayAlert("Success", "Image loaded successfully.", "OK");
+            }
+        }
+
+
         private async void OnSaveTaskClicked(object sender, EventArgs e)
         {
-            string description = taskdescription.Text;
+            // Ensure title and description are never null
+            string title = tasktitle.Text?.Trim() ?? string.Empty;
+            string description = taskdescription.Text?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                await DisplayAlert("Validation Error", "Task title is required.", "OK");
+                return;
+            }
 
             // Fetch the list of generated tags from the API
             List<string> generatedTags = await GenerateTagsFromAPI(description) ?? new List<string>();
 
-            // Create a list of Tag objects from the generated tag names
-            List<Tag> tagList = generatedTags.Select(tagName => new Tag
-            {
-                Id = ObjectId.GenerateNewId(),
-                name = tagName,
-                description = ""
-            }).ToList();
+            // Query the tags collection for matching tags by name.
+            var matchingTags = await DatabaseService.TagsCollection
+                .Find(tag => generatedTags.Contains(tag.name))
+                .ToListAsync();
 
             var newTask = new Task_
             {
-                title = tasktitle.Text,
+                title = title,
                 description = description,
-                photo = "https://example.com/lucas.jpg", // Save Image ID if needed
-                tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
-                taglist = tagList,  // Assign the generated tag list
+                photo = uploadedImageData != null ? uploadedImageData : null, // This now holds the binary data from the image
+                tags = matchingTags.Select(tag => tag.Id).ToList(),  // Adding the matching ObjectIds,  // Empty ObjectId list (update as necessary)
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
-                assignedTo = ObjectId.Empty,
-                sector = ObjectId.Empty,
+                assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,
+                sector = (SectorPicker.SelectedItem as Sector)?.Id ?? ObjectId.Empty,
                 createdBy = UserStorage.Id,
                 isAdmin = AdminTicketCheckbox.IsChecked
 
@@ -98,7 +141,6 @@ namespace ClearTask.Views
             {
                 var requestBody = new
                 {
-                    model = "tagger",
                     prompt = enhancedPrompt,
                     stream = false,
                     options = new { temperature = 0 },
@@ -124,7 +166,7 @@ namespace ClearTask.Views
                     Console.WriteLine("Sending API request...");
                     Console.WriteLine($"Request Body: {JsonSerializer.Serialize(requestBody)}");
 
-                    HttpResponseMessage response = await client.PostAsync($"{ApiUri}/api/generate", jsonContent);
+                    HttpResponseMessage response = await client.PostAsync($"{ApiUri}/query", jsonContent);
                     response.EnsureSuccessStatusCode();
 
                     string responseContent = await response.Content.ReadAsStringAsync();
@@ -132,32 +174,26 @@ namespace ClearTask.Views
 
                     var finalResponse = JsonSerializer.Deserialize<JsonElement>(responseContent);
 
-                    // Extract the "response" field (which is itself a JSON string)
+                    // Extract the "response" field (which is a space-separated string)
                     if (finalResponse.TryGetProperty("response", out var responseElement))
                     {
-                        string responseJson = responseElement.GetString();
-                        Console.WriteLine($"Extracted Inner JSON: {responseJson}");
+                        string responseText = responseElement.GetString();
+                        Console.WriteLine($"Extracted Response Text: {responseText}");
 
-                        // Deserialize the inner JSON string
-                        var innerResponse = JsonSerializer.Deserialize<JsonElement>(responseJson);
+                        // Split the string into tags
+                        List<string> tags = responseText.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                                         .ToList();
 
-                        if (innerResponse.TryGetProperty("generated_tags", out var tagsElement))
-                        {
-                            List<string> tags = new List<string>();
-                            foreach (var item in tagsElement.EnumerateArray())
-                            {
-                                tags.Add(item.GetString());
-                            }
+                        Console.WriteLine("Extracted Tags:");
+                        tags.ForEach(tag => Console.WriteLine($"- {tag}"));
 
-                            Console.WriteLine("Extracted Tags:");
-                            tags.ForEach(tag => Console.WriteLine($"- {tag}"));
-
-                            return tags;
-                        }
+                        return tags;
                     }
-
-                    Console.WriteLine("Property 'generated_tags' not found in extracted JSON.");
-                    return new List<string> { "DefaultTag" };
+                    else
+                    {
+                        Console.WriteLine("Property 'generated_tags' not found in extracted JSON.");
+                        return new List<string> { "DefaultTag" };
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -168,9 +204,22 @@ namespace ClearTask.Views
             }
         }
 
-        private void SetDatePickerVisibility(object sender, EventArgs e)
+        private void SetManagerVisibility(object sender, EventArgs e)
         {
-            DeadlinePicker.IsVisible = (UserStorage.UserRole == Role.Manager);
+            if (UserStorage.UserRole == Role.Manager)
+            {
+                // Show elements specific to the Manager role
+                DeadlinePicker.IsVisible = true;
+                UserPicker.IsVisible = true;
+                this.FindByName<Label>("DeadlineLabel").IsVisible = true;
+                this.FindByName<Label>("UserPickerLabel").IsVisible = true;
+                this.FindByName<StackLayout>("AdminTicketStack").IsVisible = true;
+            }
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            SetManagerVisibility(null, EventArgs.Empty);
         }
 
 

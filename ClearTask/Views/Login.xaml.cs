@@ -9,5 +9,4 @@ public partial class Login : ContentPage
         BindingContext = new LoginViewModel();
         Shell.SetNavBarIsVisible(this, false);
     }
-
 }
