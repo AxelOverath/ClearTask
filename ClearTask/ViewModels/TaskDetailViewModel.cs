@@ -113,10 +113,24 @@ namespace ClearTask.ViewModels
             }
         }
 
+
+        private bool _isHandyman;
+        public bool IsHandyman
+        {
+            get => _isHandyman;
+            set
+            {
+                _isHandyman = value;
+                OnPropertyChanged(nameof(IsHandyman));
+            }
+        }
+
+        private User _assignedUser;
+
         public TaskDetailViewModel(Task_ task)
         {
             Task = task;
-
+            IsHandyman = UserStorage.UserRole == Role.Handyman;
             // Load Assigned User
             if (Task.assignedTo != ObjectId.Empty)
             {
