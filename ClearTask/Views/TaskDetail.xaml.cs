@@ -1,6 +1,7 @@
 using ClearTask.Data;
 using ClearTask.Models;
 using ClearTask.ViewModels;
+using TaskStatus = ClearTask.Models.TaskStatus;
 
 namespace ClearTask.Views
 {
@@ -21,9 +22,9 @@ namespace ClearTask.Views
             {
                 EditButton.IsVisible = false;
             }
-            if(UserStorage.UserRole != Role.Handyman)
+            if(UserStorage.UserRole != Role.Handyman || task.status == TaskStatus.InProgress)
             {
-                startbutton.IsVisible = false;
+                    startbutton.IsVisible = false;
             }
             if (task.photo == null)
             {
@@ -55,6 +56,7 @@ namespace ClearTask.Views
         private async void OnStartButtonClicked(object sender, EventArgs e)
         {
             await DisplayAlert("Start Task", "Task started!", "OK");
+            await Navigation.PopAsync();
         }
 
 

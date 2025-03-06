@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ClearTask.Views.ReportedTasklist"
+             x:Class="ClearTask.Views.MyTaskList"
              BackgroundColor="#F9F9F9"
              Title="Task List">
 
@@ -11,7 +11,7 @@
 
                 <!-- Header -->
                 <StackLayout Spacing="10">
-                    <Label Text="Reported Tasks" 
+                    <Label Text="My Tasks" 
                            FontSize="28" 
                            FontAttributes="Bold" 
                            HorizontalOptions="Center" 
@@ -99,16 +99,6 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <!-- Add Task Button -->
-                <Grid VerticalOptions="End" HorizontalOptions="Center" Grid.Row="2">
-                    <Button Text="Add New Task" 
-             FontSize="18" 
-             Padding="15" 
-             BackgroundColor="#007BFF" 
-             TextColor="White" 
-             CornerRadius="10"
-             Clicked="NavigateToAddTaskPage" />
-                </Grid>
             </Grid>
         </Grid>
     </ContentPage.Content>

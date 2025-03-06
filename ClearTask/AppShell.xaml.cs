@@ -27,6 +27,7 @@ namespace ClearTask
             Routing.RegisterRoute("Sectoren", typeof(SectorsOverviewPage));
             Routing.RegisterRoute("Login", typeof(Login));
             Routing.RegisterRoute("tasks", typeof(TaskList));
+            Routing.RegisterRoute("MyTaskList", typeof(MyTaskList));
 
 
         }
@@ -51,13 +52,23 @@ namespace ClearTask
                 ContentTemplate = new DataTemplate(typeof(ReportedTasklist)),
                 Route = "ReportedTasklist"
             };
+            var mytasktab = new ShellContent
+            {
+                Icon = "assign.png",
+                ContentTemplate = new DataTemplate(typeof(MyTaskList)),
+                Route = "MyTaskList"
+            };
 
-
+            
 
             // Only add the task tab if the user is not an Employee
             if (UserStorage.UserRole != Role.Employee)
             {
                 tabBar.Items.Add(taskTab);
+                if(UserStorage.UserRole == Role.Handyman)
+                {
+                    tabBar.Items.Add(mytasktab);
+                }
             }
             tabBar.Items.Add(taskcreatedtab);
             // Extra tabs voor beheerders
