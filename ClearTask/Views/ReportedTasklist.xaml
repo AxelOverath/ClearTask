@@ -94,12 +94,21 @@
                                                FontAttributes="Bold" 
                                                HorizontalOptions="Center" />
                                     </Frame>
-
                                 </Grid>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+                <!-- Add Task Button -->
+                <Grid VerticalOptions="End" HorizontalOptions="Center" Grid.Row="2">
+                    <Button Text="Add New Task" 
+             FontSize="18" 
+             Padding="15" 
+             BackgroundColor="#007BFF" 
+             TextColor="White" 
+             CornerRadius="10"
+             Clicked="NavigateToAddTaskPage" />
+                </Grid>
             </Grid>
         </Grid>
     </ContentPage.Content>

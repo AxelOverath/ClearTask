@@ -20,6 +20,7 @@ namespace ClearTask.Models
         public ObjectId sector { get; set; }
         public ObjectId createdBy { get; set; }
         public Boolean? isAdmin { get; set; }
+        public ObjectId startedBy { get; set; }
     }
 
     public enum TaskStatus

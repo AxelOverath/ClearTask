@@ -22,18 +22,11 @@ namespace ClearTask
             Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
             Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
             Routing.RegisterRoute("Sectoren", typeof(SectorsOverviewPage));
-            GoToLogin();
-        }
+            Routing.RegisterRoute("Login", typeof(Login));
+            Routing.RegisterRoute("tasks", typeof(TaskList));
 
-        public async void GoToLogin()
-        {
-            // Zorg ervoor dat de navigatie op de hoofdthread gebeurt
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.GoToAsync("//Login");
-            });
-        }
 
+        }
 
         public void SetupTabs()
         {
@@ -42,21 +35,27 @@ namespace ClearTask
 
             // Nieuwe TabBar aanmaken
             var tabBar = new TabBar();
-
             // Algemene tab voor taken
             var taskTab = new ShellContent
             {
-                Title = "Taken",
+                Icon = "task.png",
                 ContentTemplate = new DataTemplate(typeof(TaskList)),
                 Route = "tasks"
             };
             var taskcreatedtab = new ShellContent
             {
-                Title = "Reported Tasks",
+                Icon ="done.png",
                 ContentTemplate = new DataTemplate(typeof(ReportedTasklist)),
                 Route = "ReportedTasklist"
             };
-            tabBar.Items.Add(taskTab);
+
+
+
+            // Only add the task tab if the user is not an Employee
+            if (UserStorage.UserRole != Role.Employee)
+            {
+                tabBar.Items.Add(taskTab);
+            }
             tabBar.Items.Add(taskcreatedtab);
             // Extra tabs voor beheerders
             if (UserStorage.UserRole == Role.Admin && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))

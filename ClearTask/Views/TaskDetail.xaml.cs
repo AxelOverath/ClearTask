@@ -12,7 +12,7 @@ namespace ClearTask.Views
             BindingContext = new TaskDetailViewModel(task);
 
             // Only show the Edit button if the current user is a Manager
-            if (UserStorage.UserRole == Role.Manager)
+            if (UserStorage.UserRole == Role.Manager || UserStorage.UserRole == Role.Admin)
             {
                 EditButton.IsVisible = true;
             }
@@ -20,6 +20,15 @@ namespace ClearTask.Views
             {
                 EditButton.IsVisible = false;
             }
+            if(UserStorage.UserRole != Role.Handyman)
+            {
+                startbutton.IsVisible = false;
+            }
+            if (task.photo == null)
+            {
+                ImageElement.IsVisible = false;
+            }
+
         }
 
         private async void OnBackButtonClicked(object sender, EventArgs e)

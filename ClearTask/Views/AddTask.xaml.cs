@@ -121,7 +121,8 @@ namespace ClearTask.Views
                 assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,
                 sector = (SectorPicker.SelectedItem as Sector)?.Id ?? ObjectId.Empty,
                 createdBy = UserStorage.Id,
-                isAdmin = AdminTicketCheckbox.IsChecked
+                isAdmin = AdminTicketCheckbox.IsChecked,
+                startedBy = ObjectId.Empty
 
             };
 
@@ -206,7 +207,7 @@ namespace ClearTask.Views
 
         private void SetManagerVisibility(object sender, EventArgs e)
         {
-            if (UserStorage.UserRole == Role.Manager)
+            if (UserStorage.UserRole == Role.Manager || UserStorage.UserRole == Role.Admin)
             {
                 // Show elements specific to the Manager role
                 DeadlinePicker.IsVisible = true;

@@ -43,7 +43,8 @@
                             BorderWidth="0.1"
                             HorizontalOptions="End"
                             Clicked="OnEditButtonClicked"
-                            Grid.Column="2"/>
+                            Grid.Column="2"
+                            />
                 </Grid>
 
                 <!-- Divider -->
@@ -63,9 +64,11 @@
 
                 <!-- Task Image -->
                 <Image Source="{Binding TaskImageSource}" 
-       HeightRequest="200" 
-       Aspect="AspectFit" 
-       HorizontalOptions="Center" />
+                       x:Name="ImageElement"
+                    HeightRequest="200" 
+                    Aspect="AspectFit" 
+                    HorizontalOptions="Center" 
+                    />
 
 
                 <!-- Deadline -->
@@ -151,6 +154,7 @@
 
                 <!-- Start Task Button -->
                 <Button Text="Start Task" 
+                        x:Name="startbutton"
                         FontSize="18" 
                         BackgroundColor="Green" 
                         TextColor="White"
