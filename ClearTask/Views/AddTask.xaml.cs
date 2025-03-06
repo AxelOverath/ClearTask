@@ -105,21 +105,17 @@ namespace ClearTask.Views
             // Fetch the list of generated tags from the API
             List<string> generatedTags = await GenerateTagsFromAPI(description) ?? new List<string>();
 
-            // Create a list of Tag objects from the generated tag names
-            List<Tag> tagList = generatedTags.Select(tagName => new Tag
-            {
-                Id = ObjectId.GenerateNewId(),
-                name = tagName,
-                description = ""
-            }).ToList();
+            // Query the tags collection for matching tags by name.
+            var matchingTags = await DatabaseService.TagsCollection
+                .Find(tag => generatedTags.Contains(tag.name))
+                .ToListAsync();
 
             var newTask = new Task_
             {
                 title = title,
                 description = description,
                 photo = uploadedImageData != null ? uploadedImageData : null, // This now holds the binary data from the image
-                tags = new List<ObjectId>(),  // Empty ObjectId list (update as necessary)
-                taglist = tagList,  // Assign the generated tag list
+                tags = matchingTags.Select(tag => tag.Id).ToList(),  // Adding the matching ObjectIds,  // Empty ObjectId list (update as necessary)
                 deadline = DeadlinePicker.Date,
                 status = TaskStatus.Pending,
                 assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,

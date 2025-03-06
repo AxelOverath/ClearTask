@@ -60,6 +60,10 @@ namespace ClearTask.Data
         {
             get { return userCollection; }
         }
+        public static IMongoCollection<CustomTag> TagsCollection
+        {
+            get { return tagCollection; }
+        }
 
         public static async Task InsertUserAsync(User user)
         {
