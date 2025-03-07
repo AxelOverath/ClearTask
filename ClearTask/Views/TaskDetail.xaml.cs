@@ -64,12 +64,9 @@ namespace ClearTask.Views
 
             await DisplayAlert("Start Task", "Task started!", "OK");
             await Navigation.PopAsync();
-        }
-
 
             DatabaseService.UpdateStartedBy(TaskId, HandyId);
 
-            await DisplayAlert("Succes", "You took this task", "OK");
         }
 
     }
