@@ -15,7 +15,7 @@ namespace ClearTask.Data
 
             return status switch
             {
-                "pending" => Colors.Goldenrod,   //  Yellow for Pending
+                "pending" => Colors.LightGrey,   //  Yellow for Pending
                 "inprogress" => Colors.Orange,  //  Orange for In Progress
                 "completed" => Colors.Green,    //  Green for Completed
                 _ => Colors.Gray // Default for unknown values

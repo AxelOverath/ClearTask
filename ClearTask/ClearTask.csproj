@@ -96,6 +96,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\MyTaskList.xaml.cs">
+	    <DependentUpon>MyTaskList.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\TaskDetailPageEdit.xaml.cs">
 	    <DependentUpon>TaskDetailPageEdit.xaml</DependentUpon>
 	  </Compile>
@@ -136,6 +139,9 @@
     <Generator>MSBuild:Compile</Generator>
   </MauiXaml>
   <MauiXaml Update="Views\pc\AdminPagel.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </MauiXaml>
+  <MauiXaml Update="Views\MyTaskList.xaml">
     <Generator>MSBuild:Compile</Generator>
   </MauiXaml>
   <MauiXaml Update="Views\TaskDetailPageEdit.xaml">
