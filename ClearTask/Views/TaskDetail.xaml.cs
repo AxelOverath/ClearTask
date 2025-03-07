@@ -1,18 +1,23 @@
 using ClearTask.Data;
 using ClearTask.Models;
 using ClearTask.ViewModels;
+using MongoDB.Bson;
 using TaskStatus = ClearTask.Models.TaskStatus;
 
 namespace ClearTask.Views
 {
     public partial class TaskDetail : ContentPage
     {
+        public ObjectId TaskId { get; set; }
         private Task_ _task;
+        
         public TaskDetail(Task_ task)
         {
             InitializeComponent();
             BindingContext = new TaskDetailViewModel(task);
+            TaskId = task.Id;
             _task = task;
+
             // Only show the Edit button if the current user is a Manager
             if (UserStorage.UserRole == Role.Manager || UserStorage.UserRole == Role.Admin)
             {
@@ -55,11 +60,17 @@ namespace ClearTask.Views
 
         private async void OnStartButtonClicked(object sender, EventArgs e)
         {
+            ObjectId HandyId = UserStorage.Id;
+
             await DisplayAlert("Start Task", "Task started!", "OK");
             await Navigation.PopAsync();
         }
 
 
+            DatabaseService.UpdateStartedBy(TaskId, HandyId);
+
+            await DisplayAlert("Succes", "You took this task", "OK");
+        }
 
     }
 }
