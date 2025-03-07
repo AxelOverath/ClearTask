@@ -6,6 +6,7 @@ using MongoDB.Driver.GridFS;
 using System.Text.Json;
 
 using MongoDB.Driver.Linq;
+using System.Threading.Tasks;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -424,5 +425,20 @@ namespace ClearTask.Data
             return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Pending);
         }
 
+        public static async Task UpdateStartedBy(ObjectId taskId, ObjectId handyId)
+        {
+            var filter = Builders<Task_>.Filter.Eq(s => s.Id, taskId); // Find task by ID
+            var update = Builders<Task_>.Update.Combine(
+                            Builders<Task_>.Update.Set(s => s.startedBy, handyId),  // Update startedBy
+                            Builders<Task_>.Update.Set(s => s.status, Models.TaskStatus.InProgress) // Update TaskStatus
+                         );
+
+            var options = new FindOneAndUpdateOptions<Task_>
+            {
+                ReturnDocument = ReturnDocument.After // Return updated sector
+            };
+
+            var updatedTask = await taskCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
     }
 }
