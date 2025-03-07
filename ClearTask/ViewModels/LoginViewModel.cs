@@ -65,7 +65,15 @@ namespace ClearTask.ViewModels
                 // Update AppShell navigation
                 (Application.Current.MainPage as AppShell)?.SetupTabs();
 
-                await Shell.Current.GoToAsync("//tasks");
+                if(UserStorage.UserRole != Role.Employee)
+                {
+                    await Shell.Current.GoToAsync("//tasks");
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync("//ReportedTasklist");
+                }
+                
             }
             else
             {
