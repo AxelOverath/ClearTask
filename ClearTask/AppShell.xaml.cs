@@ -2,6 +2,7 @@
 ﻿using ClearTask.Views;
 using ClearTask.Data;
 using ClearTask.Models;
+using ClearTask.ViewModels;
 
 namespace ClearTask
 {
@@ -18,19 +19,18 @@ namespace ClearTask
             Routing.RegisterRoute(nameof(TagEditPage), typeof(TagEditPage));
             Routing.RegisterRoute("tagcreate", typeof(TagCreatePage));
             Routing.RegisterRoute("tagoverview", typeof(TagOverviewPage));
+            Routing.RegisterRoute("dashboard", typeof(ManagerDashboardPage));
+            Routing.RegisterRoute("adminticketlist", typeof(AdminTicketList));
+            Routing.RegisterRoute("ReportedTasklist", typeof(ReportedTasklist));
+            Routing.RegisterRoute(nameof(TaskDetailPageEdit), typeof(TaskDetailPageEdit));
+            Routing.RegisterRoute("Sectoren", typeof(SectorsOverviewPage));
+            Routing.RegisterRoute("Login", typeof(Login));
+            Routing.RegisterRoute("tasks", typeof(TaskList));
+            Routing.RegisterRoute("tasksdetail", typeof(TaskDetail));
+            Routing.RegisterRoute("MyTaskList", typeof(MyTaskList));
 
-            GoToLogin();
+
         }
-
-        public async void GoToLogin()
-        {
-            // Zorg ervoor dat de navigatie op de hoofdthread gebeurt
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.GoToAsync("//Login");
-            });
-        }
-
 
         public void SetupTabs()
         {
@@ -39,16 +39,38 @@ namespace ClearTask
 
             // Nieuwe TabBar aanmaken
             var tabBar = new TabBar();
-
             // Algemene tab voor taken
             var taskTab = new ShellContent
             {
-                Title = "Taken",
+                Icon = "task.png",
                 ContentTemplate = new DataTemplate(typeof(TaskList)),
                 Route = "tasks"
             };
-            tabBar.Items.Add(taskTab);
+            var taskcreatedtab = new ShellContent
+            {
+                Icon ="done.png",
+                ContentTemplate = new DataTemplate(typeof(ReportedTasklist)),
+                Route = "ReportedTasklist"
+            };
+            var mytasktab = new ShellContent
+            {
+                Icon = "assign.png",
+                ContentTemplate = new DataTemplate(typeof(MyTaskList)),
+                Route = "MyTaskList"
+            };
 
+            
+
+            // Only add the task tab if the user is not an Employee
+            if (UserStorage.UserRole != Role.Employee)
+            {
+                tabBar.Items.Add(taskTab);
+                if(UserStorage.UserRole == Role.Handyman)
+                {
+                    tabBar.Items.Add(mytasktab);
+                }
+            }
+            tabBar.Items.Add(taskcreatedtab);
             // Extra tabs voor beheerders
             if (UserStorage.UserRole == Role.Admin && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
             {
@@ -68,7 +90,43 @@ namespace ClearTask
                     Route = "tagoverview"
                 });
 
+                adminSection.Items.Add(new ShellContent
+                {
+                    Title = "adminticketlist",
+                    ContentTemplate = new DataTemplate(typeof(AdminTicketList)),
+                    Route = "adminticketlist"
+                });
+                adminSection.Items.Add(new ShellContent
+                {
+                    Title = "Sector List",
+                    ContentTemplate = new DataTemplate(typeof(SectorsOverviewPage)),
+                    Route = "Sectoren"
+                });
+
                 tabBar.Items.Add(adminSection);
+            }
+
+            // Extra tabs voor beheerders
+            if (UserStorage.UserRole == Role.Manager && (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst))
+            {
+                var managerSection = new ShellSection { Title = "Manage" };
+
+                managerSection.Items.Add(new ShellContent
+                {
+                    Title = "dashboard",
+                    ContentTemplate = new DataTemplate(typeof(ManagerDashboardPage)),
+                    Route = "dashboard"
+                });
+
+                managerSection.Items.Add(new ShellContent
+                {
+                    Title = "Gebruikers",
+                    ContentTemplate = new DataTemplate(typeof(UsersPage)),
+                    Route = "users"
+                });
+
+
+                tabBar.Items.Add(managerSection);
             }
 
             // Voeg de TabBar toe

@@ -13,7 +13,13 @@
         <!-- Zoek- en filterbalk naast elkaar -->
         <HorizontalStackLayout Spacing="10">
             <SearchBar x:Name="SearchBar" Placeholder="Zoek gebruiker..." TextChanged="OnSearchTextChanged" WidthRequest="200"/>
-            <Picker Title="Filter op rol" ItemsSource="{Binding Roles}" SelectedIndexChanged="OnRoleFilterChanged" WidthRequest="150"/>
+            <Picker Title="Filter op rol" 
+        ItemsSource="{Binding Roles}" 
+        SelectedIndexChanged="OnRoleFilterChanged"
+        WidthRequest="150"
+        IsVisible="{Binding IsRoleFilterVisible}"/>
+
+
         </HorizontalStackLayout>
 
         <!-- Horizontale scroll voor gebruikers -->
@@ -39,7 +45,7 @@
         </CollectionView>
 
 
-        <Button Text="Nieuwe gebruiker toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserClicked"/>
+        <Button Text="Nieuwe gebruiker toevoegen" BackgroundColor="Green" TextColor="White" Clicked="OnAddUserClicked" IsVisible="{Binding IsRoleFilterVisible}"/>
     </VerticalStackLayout>
 
 

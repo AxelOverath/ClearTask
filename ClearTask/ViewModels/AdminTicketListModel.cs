@@ -8,13 +8,13 @@ using MongoDB.Driver;
 
 namespace ClearTask.ViewModels;
 
-public class TaskListViewModel : INotifyPropertyChanged
+public class AdminTicketListModel : INotifyPropertyChanged
 {
     private ObservableCollection<Task_> _tasks;
 
     public ObservableCollection<Task_> Tasks
     {
-        get => _tasks;
+        get => new ObservableCollection<Task_>(_tasks?.Where(task => task.isAdmin == true) ?? new List<Task_>());
         set
         {
             _tasks = value;
@@ -22,13 +22,14 @@ public class TaskListViewModel : INotifyPropertyChanged
         }
     }
 
+
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public TaskListViewModel()
+    public AdminTicketListModel()
     {
         LoadTasks();
         DatabaseService.TasksUpdated += async () => await LoadTasks(); // **Luisteren naar DB updates**
@@ -38,29 +39,7 @@ public class TaskListViewModel : INotifyPropertyChanged
     {
         try
         {
-            List<Task_> tasksFromDb;
-
-            // If user role is Handyman, load tasks only from their sector
-            if (UserStorage.UserRole == Role.Handyman)
-            {
-                var allSectors = await DatabaseService.SectorCollection.Find(_ => true).ToListAsync();
-                var userSector = allSectors.FirstOrDefault(sector => sector.handymanIds.Contains(UserStorage.Id));
-
-                if (userSector == null)
-                {
-                    Console.WriteLine("User sector not found.");
-                    Tasks = new ObservableCollection<Task_>();
-                    return;
-                }
-
-                tasksFromDb = await DatabaseService.TaskCollection
-                                    .Find(task => task.sector == userSector.Id)
-                                    .ToListAsync();
-            }
-            else // If not Handyman, load all tasks
-            {
-                tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
-            }
+            var tasksFromDb = await DatabaseService.TaskCollection.Find(_ => true).ToListAsync();
 
             var detailedTasks = new List<Task_>();
 

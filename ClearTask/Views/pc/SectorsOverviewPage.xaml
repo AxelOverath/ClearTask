@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClearTask.Views.Pc"
+             x:Class="ClearTask.Views.Pc.SectorsOverviewPage"
+             Title="Sectors Overview"
+             BackgroundColor="#F9F9F9">
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <!-- Page Title -->
+        <Label Text="Sector Overview" 
+               FontSize="28" 
+               FontAttributes="Bold" 
+               TextColor="#2C3E50" 
+               HorizontalOptions="Center" />
+
+        <!-- Sector List -->
+        <CollectionView ItemsSource="{Binding Sectors}" 
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" 
+                           BackgroundColor="#27AE60" 
+                           CornerRadius="12" 
+                           Margin="5" 
+                           HasShadow="True">
+
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:SectorsOverviewPage}}}"
+                                                  CommandParameter="{Binding}" />
+                        </Frame.GestureRecognizers>
+
+                        <!-- Sector Item Layout -->
+                        <Grid ColumnDefinitions="Auto, *, Auto, Auto" 
+                              HorizontalOptions="FillAndExpand" 
+                              VerticalOptions="Center">
+
+                            <!-- Delete Button -->
+                            <Button Text="🗑️" 
+                                    BackgroundColor="Transparent" 
+                                    TextColor="#FF6B6B" 
+                                    FontSize="20"
+                                    Clicked="DeleteSectorClicked" 
+                                    Padding="5" 
+                                    HorizontalOptions="Start" 
+                                    VerticalOptions="Center" 
+                                    Grid.Column="0" 
+                                    CommandParameter="{Binding Id}" />
+
+                            <!-- Sector Name -->
+                            <Label Text="{Binding name}" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="White" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center" 
+                                   Grid.Column="1" />
+
+                            <!-- Edit Button -->
+                            <Button Text="✐" 
+                                    BackgroundColor="Transparent" 
+                                    TextColor="#F1C40F" 
+                                    FontSize="20"
+                                    Clicked="EditSectorName" 
+                                    Padding="5" 
+                                    HorizontalOptions="End" 
+                                    VerticalOptions="Center" 
+                                    Grid.Column="2" 
+                                    CommandParameter="{Binding Id}"/>
+
+                            <!-- Handyman Overview Button -->
+                            <Button Text="👥" 
+                                    BackgroundColor="Transparent" 
+                                    TextColor="#3498DB" 
+                                    FontSize="20"
+                                    Clicked="OverviewHandyman" 
+                                    Padding="5" 
+                                    HorizontalOptions="End" 
+                                    VerticalOptions="Center" 
+                                    Grid.Column="3" 
+                                    CommandParameter="{Binding Id}"/>
+                        </Grid>
+
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Create New Sector Button -->
+        <Button Text="Create New Sector" 
+                FontSize="18" 
+                BackgroundColor="#2ECC71" 
+                TextColor="White" 
+                CornerRadius="10" 
+                HeightRequest="50"
+                Clicked="OnAddSectorClicked" />
+
+    </VerticalStackLayout>
+</ContentPage>

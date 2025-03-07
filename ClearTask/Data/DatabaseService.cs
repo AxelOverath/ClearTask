@@ -5,6 +5,7 @@ using CustomTag = ClearTask.Models.Tag;
 using MongoDB.Driver.GridFS;
 using System.Text.Json;
 
+using MongoDB.Driver.Linq;
 namespace ClearTask.Data
 {
     internal class DatabaseService
@@ -19,15 +20,17 @@ namespace ClearTask.Data
 
         public static event Action TasksUpdated;
         public static event Action UserUpdated;
+
+        public static event Action SectorUpdated;
+
         public static event Action TagUpdated;
 
 
         static DatabaseService()
         {
-            const string connectionUri = "mongodb://axeloverath:Lao1KgIFn9WJeofd@cleartask-shard-00-00.dcnmf.mongodb.net:27017,cleartask-shard-00-01.dcnmf.mongodb.net:27017,cleartask-shard-00-02.dcnmf.mongodb.net:27017/?ssl=true&replicaSet=atlas-ah0h9j-shard-0&authSource=admin&retryWrites=true&w=majority&appName=ClearTask";
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
+            var settings = MongoClientSettings.FromConnectionString(AppConfig.DbConnectionString);
 
-            string databaseName = "mongodbVSCodePlaygroundDB";
+            string databaseName = "ClearTaskDB";
             var client = new MongoClient(settings);
             var db = client.GetDatabase(databaseName);
             gridFS = new GridFSBucket(db);
@@ -41,10 +44,13 @@ namespace ClearTask.Data
 
             StartUserChangedListener();
 
+            StartSectorenChangedListener();
+
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
         public static IMongoCollection<CustomTag> TagCollection => tagCollection;
+        public static IMongoCollection<Sector> SectorCollection => sectorCollection;
         public static async Task InsertTaskAsync(Task_ task)
         {
             await taskCollection.InsertOneAsync(task);
@@ -54,9 +60,19 @@ namespace ClearTask.Data
         {
             get { return userCollection; }
         }
+        public static IMongoCollection<CustomTag> TagsCollection
+        {
+            get { return tagCollection; }
+        }
+
         public static async Task InsertUserAsync(User user)
         {
             await userCollection.InsertOneAsync(user);
+        }
+
+        public static IMongoCollection<Sector> SectorsCollection
+        {
+            get { return sectorCollection; }
         }
 
         // Fetch Handyman object by ObjectId
@@ -126,19 +142,6 @@ namespace ClearTask.Data
 
             if (task != null)
             {
-                // Populate 'assignedTo' (Handyman)
-                if (task.assignedTo != null)
-                {
-                    var handyman = await GetHandymanById(task.assignedTo);
-                    task.hassignedTo = handyman; // Assign the related Handyman object
-                }
-
-                // Populate 'sector' (Sector)
-                if (task.sector != null)
-                {
-                    var sector = await GetSectorById(task.sector);
-                    task.actualSector = sector; // Assign the related Sector object
-                }
 
                 // Populate 'taglist' (Tags)
                 if (task.tags != null && task.tags.Any())
@@ -161,7 +164,8 @@ namespace ClearTask.Data
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Task_>>()
                 .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
                                 change.OperationType == ChangeStreamOperationType.Update ||
-                                change.OperationType == ChangeStreamOperationType.Delete);
+                                change.OperationType == ChangeStreamOperationType.Delete ||
+                            change.OperationType == ChangeStreamOperationType.Modify);
 
             var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
 
@@ -199,12 +203,13 @@ namespace ClearTask.Data
 
     private static async void StartUserChangedListener()
     {
-        Console.WriteLine("Listening for task changes...");
+        Console.WriteLine("Listening for Users changes...");
 
         var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<User>>()
             .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
                             change.OperationType == ChangeStreamOperationType.Update ||
-                            change.OperationType == ChangeStreamOperationType.Delete);
+                            change.OperationType == ChangeStreamOperationType.Delete || 
+                            change.OperationType == ChangeStreamOperationType.Modify);
 
         var cursor = await userCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
 
@@ -236,6 +241,110 @@ namespace ClearTask.Data
         {
             UserUpdated?.Invoke();
         }
+
+        public static void TriggerSectorUpdatedEvent()
+        {
+            SectorUpdated?.Invoke();
+        }
+
+        //sectoren
+        private static async void StartSectorenChangedListener()
+        {
+            Console.WriteLine("Listening for Sector changes...");
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Sector>>()
+                .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                                change.OperationType == ChangeStreamOperationType.Update ||
+                                change.OperationType == ChangeStreamOperationType.Delete);
+
+            var cursor = await sectorCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (await cursor.MoveNextAsync(_cts.Token))
+                    {
+                        foreach (var change in cursor.Current)
+                        {
+                            Console.WriteLine($"Database change detected: {change.OperationType}");
+                            SectorUpdated?.Invoke();
+                        }
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Change stream listening stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in change stream listener: {ex.Message}");
+                }
+            });
+        }
+
+        public static async Task DeleteSector(ObjectId sectorId)
+        {
+            await DatabaseService.SectorsCollection.FindOneAndDeleteAsync(u => u.Id == sectorId);
+        }
+
+        public static async Task AddSector(Sector sector)
+        {
+            await DatabaseService.SectorsCollection.InsertOneAsync(sector);
+        }
+
+        public static async Task UpdateSectorName(ObjectId Id, String NewSectorName)
+        {
+            var filter = Builders<Sector>.Filter.Eq(s => s.Id, Id); // Find sector by ID
+            var update = Builders<Sector>.Update.Set(s => s.name, NewSectorName); // Update name
+
+            var options = new FindOneAndUpdateOptions<Sector>
+            {
+                ReturnDocument = ReturnDocument.After // Return updated sector
+            };
+
+            var updatedSector = await sectorCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
+
+        public static async Task<List<User>> GetHandymanFromSectorByIds(List<ObjectId> HandymanIds)
+        {
+            var filter = Builders<User>.Filter.In(s => s.Id, HandymanIds);
+            var Handymans = await userCollection.Find(filter).ToListAsync();
+            return Handymans;
+        }
+
+        public static async Task<List<User>> GetAllHandymen()
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.userRole, Role.Handyman);
+            var handymen = await userCollection.Find(filter).ToListAsync();
+            return handymen;
+        }
+
+        public static async Task AddHandymanSector(ObjectId IdSector, ObjectId IdHandyman)
+        {
+            var filter = Builders<Sector>.Filter.Eq(s => s.Id, IdSector); // Find sector by ID
+            var update = Builders<Sector>.Update.AddToSet(s => s.handymanIds, IdHandyman); // Update name
+
+            var options = new FindOneAndUpdateOptions<Sector>
+            {
+                ReturnDocument = ReturnDocument.After // Return updated sector
+            };
+
+            var updatedSector = await sectorCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
+
+        public static async Task DeleteHandymanSector(ObjectId IdSector, ObjectId IdHandyman)
+        {
+            var filter = Builders<Sector>.Filter.Eq(s => s.Id, IdSector); // Find sector by ID
+            var update = Builders<Sector>.Update.Pull(s => s.handymanIds, IdHandyman); // Update name
+
+            var options = new FindOneAndUpdateOptions<Sector>
+            {
+                ReturnDocument = ReturnDocument.After // Return updated sector
+            };
+
+            var updatedSector = await sectorCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
         public static async Task<List<CustomTag>> GetTagsAsync()
         {
             return await tagCollection.Find(new BsonDocument()).ToListAsync();
@@ -264,5 +373,58 @@ namespace ClearTask.Data
         {
             TagUpdated?.Invoke();
         }
+
+        /// <summary>
+        /// Haal het aantal taken per status op.
+        /// </summary>
+        public static async Task<Dictionary<Models.TaskStatus, int>> GetTaskCountByStatus()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t => t.status)
+                        .ToDictionary(g => g.Key, g => g.Count());
+        }
+
+        /// <summary>
+        /// Haal het aantal taken per sector op.
+        /// </summary>
+        public static async Task<Dictionary<string, int>> GetTaskCountPerSector()
+        {
+            var tasks = await taskCollection.AsQueryable().ToListAsync();
+            var sectors = await sectorCollection.AsQueryable().ToListAsync();
+
+            return tasks.GroupBy(t =>
+                        sectors.FirstOrDefault(s => s.Id == t.sector)?.name ?? "Onbekend")
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Count()
+                        );
+        }
+
+
+        /// <summary>
+        /// Haal het aantal voltooide taken op.
+        /// </summary>
+        public static async Task<int> GetCompletedTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Completed);
+        }
+
+        /// <summary>
+        /// Haal het aantal lopende taken op.
+        /// </summary>
+        public static async Task<int> GetOngoingTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.InProgress);
+        }
+
+        /// <summary>
+        /// Haal het aantal openstaande taken op.
+        /// </summary>
+        public static async Task<int> GetOpenTaskCount()
+        {
+            return (int)await taskCollection.CountDocumentsAsync(t => t.status == Models.TaskStatus.Pending);
+        }
+
     }
 }

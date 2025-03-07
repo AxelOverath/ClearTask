@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.Pc.ManagerDashboardPage"
+             Title="Manager Dashboard">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Manager Dashboard" FontSize="24" TextColor="Blue" HorizontalOptions="Center"/>
+
+        <!-- Takenstatus overzicht -->
+        <Label Text="Takenstatus Overview" FontSize="18" TextColor="Black" Margin="0,20,0,5"/>
+
+        <!-- ListView voor Takenstatus -->
+        <ListView ItemsSource="{Binding TaskStatuses}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Status}" Detail="{Binding Count}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Taken per Sector -->
+        <Label Text="Taken per Sector" FontSize="18" TextColor="Black" Margin="0,20,0,5"/>
+
+        <!-- ListView voor Taken per Sector -->
+        <ListView ItemsSource="{Binding SectorCounts}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Sector}" Detail="{Binding Count}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>

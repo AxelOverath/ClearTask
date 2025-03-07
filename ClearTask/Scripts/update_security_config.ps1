@@ -1,6 +1,12 @@
-﻿# Path to the config file
+﻿# Paths
 $configPath = "Platforms/Android/Resources/xml/network_security_config.xml"
+$backupPath = "$configPath.bak"
 $appSettingsPath = "appsettings.json"
+
+# If no backup exists, create one (to restore later)
+if (-Not (Test-Path $backupPath)) {
+    Copy-Item -Path $configPath -Destination $backupPath
+}
 
 # Read the JSON config
 $json = Get-Content $appSettingsPath | ConvertFrom-Json

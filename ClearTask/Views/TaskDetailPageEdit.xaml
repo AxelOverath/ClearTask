@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClearTask.Views.TaskDetailPageEdit"
+             Title="Taak Details">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="Taak Details" FontSize="24" HorizontalOptions="Center" TextColor="Blue"/>
+
+        <!-- Titel -->
+        <Label Text="Titel" FontSize="18" />
+        <Entry Text="{Binding Task.title, Mode=TwoWay}" Placeholder="Titel" />
+
+        <!-- Beschrijving -->
+        <Label Text="Beschrijving" FontSize="18" />
+        <Editor Text="{Binding Task.description, Mode=TwoWay}" Placeholder="Beschrijving" HeightRequest="100" />
+
+        <!-- Deadline -->
+        <Label Text="Deadline" FontSize="18" />
+        <DatePicker Date="{Binding Task.deadline, Mode=TwoWay}" />
+
+        <!-- Sector Picker -->
+        <!-- Sector Picker -->
+        <Label Text="Select Sector" FontSize="16" FontAttributes="Bold" />
+        <Picker Title="Choose a Sector" 
+        x:Name="SectorPicker"
+        ItemsSource="{Binding AvailableSectors}" 
+        ItemDisplayBinding="{Binding name}"/>
+        <!-- Hier toon je de naam -->
+        
+
+
+            <!-- User Picker -->
+        <Label Text="Assign to User" FontSize="16" FontAttributes="Bold" />
+        <Picker Title="Select a User" x:Name="UserPicker"
+                ItemsSource="{Binding AvailableUsers}" 
+                ItemDisplayBinding="{Binding username}"
+                SelectedItem="{Binding Task.AssignedUser, Mode=TwoWay}" />
+
+        <!-- Admin Ticket Option -->
+        <StackLayout Orientation="Horizontal" Spacing="10">
+            <CheckBox IsChecked="{Binding Task.IsAdminTicket, Mode=TwoWay}" />
+            <Label Text="Admin ticket?" FontSize="16" VerticalOptions="Center" />
+        </StackLayout>
+
+        <!-- Beschikbare Tags -->
+        <Label Text="Beschikbare Tags" FontSize="18" />
+        <CollectionView ItemsSource="{Binding AvailableTags}" SelectionMode="None" ItemsLayout="HorizontalList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="5" BackgroundColor="LightBlue" CornerRadius="5" Margin="3">
+                        <Button Text="{Binding name}" BackgroundColor="Transparent" Clicked="OnAvailableTagClicked"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Geselecteerde Tags -->
+        <Label Text="Geselecteerde Tags" FontSize="18" />
+        <CollectionView ItemsSource="{Binding Task.taglist}" SelectionMode="None" ItemsLayout="HorizontalList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="5" BackgroundColor="MediumSeaGreen" CornerRadius="5" Margin="3">
+                        <Button Text="{Binding name}" BackgroundColor="Transparent" Clicked="OnSelectedTagClicked"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+
+
+
+        <!-- Opslaan en Terug -->
+        <Button Text="Opslaan" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White" CornerRadius="10" />
+        <Button Text="Terug" Clicked="OnBackClicked" BackgroundColor="Gray" TextColor="White" CornerRadius="10" />
+    </VerticalStackLayout>
+
+</ContentPage>
