@@ -442,5 +442,18 @@ namespace ClearTask.Data
 
             var updatedTask = await taskCollection.FindOneAndUpdateAsync(filter, update, options);
         }
+
+        public static async Task EndTask(ObjectId taskId)
+        {
+            var filter = Builders<Task_>.Filter.Eq(s => s.Id, taskId); // Find task by ID
+            var update = Builders<Task_>.Update.Set(s => s.status, Models.TaskStatus.Completed);
+
+            var options = new FindOneAndUpdateOptions<Task_>
+            {
+                ReturnDocument = ReturnDocument.After // Return updated sector
+            };
+
+            var updatedTask = await taskCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
     }
 }

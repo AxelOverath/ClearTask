@@ -35,7 +35,27 @@ namespace ClearTask.Views
             {
                 ImageElement.IsVisible = false;
             }
-
+            if(task.status == TaskStatus.InProgress && task.startedBy == UserStorage.Id)
+            {
+                endbutton.IsVisible = true;
+            }
+            else
+            {
+                endbutton.IsVisible = false;
+            }
+            if(task.assignedTo != null)
+            {
+                AssignedBox.IsVisible = true;
+            }
+            else if(task.startedBy == null)
+            {
+                AssignedBox.IsVisible = false;
+                StartedBox.IsVisible = false;
+            }
+            else
+            {
+                StartedBox.IsVisible= true;
+            }
         }
 
         private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -67,6 +87,15 @@ namespace ClearTask.Views
 
             DatabaseService.UpdateStartedBy(TaskId, HandyId);
 
+        }
+
+        private async void OnEndButtonClicked(object sender, EventArgs e)
+        {
+            await DatabaseService.EndTask(TaskId);
+
+            await DisplayAlert("Task Completed", "Task has been Completed!", "OK");
+
+            await Navigation.PopAsync();
         }
 
     }
