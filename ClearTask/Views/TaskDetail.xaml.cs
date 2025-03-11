@@ -22,10 +22,12 @@ namespace ClearTask.Views
             if (UserStorage.UserRole == Role.Manager || UserStorage.UserRole == Role.Admin)
             {
                 EditButton.IsVisible = true;
+                deletebutton.IsVisible = true;
             }
             else
             {
                 EditButton.IsVisible = false;
+                deletebutton.IsVisible = false;
             }
             if(UserStorage.UserRole != Role.Handyman || task.status == TaskStatus.InProgress)
             {
@@ -82,7 +84,7 @@ namespace ClearTask.Views
         {
             ObjectId HandyId = UserStorage.Id;
 
-            await DisplayAlert("Start Task", "Task started!", "OK");
+            await DisplayAlert("Start Task", "Task started.", "OK");
             await Navigation.PopAsync();
 
             DatabaseService.UpdateStartedBy(TaskId, HandyId);
@@ -93,9 +95,18 @@ namespace ClearTask.Views
         {
             await DatabaseService.EndTask(TaskId);
 
-            await DisplayAlert("Task Completed", "Task has been Completed!", "OK");
+            await DisplayAlert("Task Completed", "Task has been Completed.", "OK");
 
             await Navigation.PopAsync();
+        }
+
+        private async void OnDeleteButtonClicked(object sender, EventArgs e)
+        {
+            await DatabaseService.DeleteTask(TaskId);
+
+            await DisplayAlert("Task Deleted", "Task has been Deleted.", "OK");
+
+            await Navigation.PopAsync(); // Navigates back to the previous page
         }
 
     }
