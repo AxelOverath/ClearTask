@@ -71,8 +71,7 @@
                                     <!-- Deadline -->
                                     <StackLayout Orientation="Horizontal" 
                                                  Grid.Row="2" 
-                                                 Grid.Column="0"
-                                                  IsVisible="{Binding IsDeadlineVisible}">
+                                                 Grid.Column="0">
                                         <StackLayout.Triggers>
                                             <DataTrigger TargetType="StackLayout" Binding="{Binding deadline}" Value="{x:Null}">
                                                 <Setter Property="IsVisible" Value="False" />
