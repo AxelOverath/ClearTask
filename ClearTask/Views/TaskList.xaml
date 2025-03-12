@@ -73,6 +73,11 @@
                                                  Grid.Row="2" 
                                                  Grid.Column="0"
                                                   IsVisible="{Binding IsDeadlineVisible}">
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding deadline}" Value="{x:Null}">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
                                         <Label Text="Deadline: " 
                                                FontSize="14" 
                                                TextColor="#555555" 
