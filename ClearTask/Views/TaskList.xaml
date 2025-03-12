@@ -73,7 +73,7 @@
                                                  Grid.Row="2" 
                                                  Grid.Column="0">
                                         <StackLayout.Triggers>
-                                            <DataTrigger TargetType="StackLayout" Binding="{Binding deadline}" Value="{x:Null}">
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding deadline, Converter={StaticResource NullToBooleanConverter}}" Value="True">
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </StackLayout.Triggers>
