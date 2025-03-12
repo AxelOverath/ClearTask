@@ -71,11 +71,13 @@
                                     <!-- Deadline -->
                                     <StackLayout Orientation="Horizontal" 
                                                  Grid.Row="2" 
-                                                 Grid.Column="0">
+                                                 Grid.Column="0"
+                                                  IsVisible="{Binding IsDeadlineVisible}">
                                         <Label Text="Deadline: " 
                                                FontSize="14" 
-                                               TextColor="#555555" />
-                                        <Label Text="{Binding deadline, StringFormat='{0:MM/dd/yyyy}', FallbackValue='No deadline'}" 
+                                               TextColor="#555555" 
+                                              />
+                                        <Label Text="{Binding deadline, StringFormat='{0:MM/dd/yyyy}'}" 
                                                FontSize="14" 
                                                TextColor="#E74C3C" 
                                                FontAttributes="Bold" />

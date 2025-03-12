@@ -116,7 +116,7 @@ namespace ClearTask.Views
                 description = description,
                 photo = uploadedImageData != null ? uploadedImageData : null, // This now holds the binary data from the image
                 tags = matchingTags.Select(tag => tag.Id).ToList(),  // Adding the matching ObjectIds,  // Empty ObjectId list (update as necessary)
-                deadline = DeadlinePicker.Date,
+                deadline = DeadlinePicker.NullableDateTime,
                 status = TaskStatus.Pending,
                 assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,
                 sector = (SectorPicker.SelectedItem as Sector)?.Id ?? ObjectId.Empty,

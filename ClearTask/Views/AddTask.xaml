@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ClearTask.Views.AddTask"
+             xmlns:ndtp="clr-namespace:Maui.NullableDateTimePicker;assembly=Maui.NullableDateTimePicker"
              BackgroundColor="#F9F9F9"
              Title="Add New Task">
 
@@ -62,8 +63,8 @@
                            FontAttributes="Bold" 
                            IsVisible="False"
                            x:Name="DeadlineLabel"/>
-                    <DatePicker x:Name="DeadlinePicker" 
-                                Format="D" 
+                    <ndtp:NullableDateTimePicker x:Name="DeadlinePicker" 
+                                Mode="DateTime" 
                                 IsVisible="False" />
 
                     <!-- Sector Picker -->
