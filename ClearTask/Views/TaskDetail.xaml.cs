@@ -58,6 +58,11 @@ namespace ClearTask.Views
             {
                 StartedBox.IsVisible= true;
             }
+            if(task.deadline == new DateTime(2025, 1, 2))
+            {
+                DeadlineBlock.IsVisible = false;
+            }
+            else { DeadlineBlock.IsVisible = true; }
         }
 
         private async void OnBackButtonClicked(object sender, EventArgs e)
