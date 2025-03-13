@@ -29,7 +29,7 @@ namespace ClearTask.Views
                 EditButton.IsVisible = false;
                 deletebutton.IsVisible = false;
             }
-            if(UserStorage.UserRole != Role.Handyman || task.status == TaskStatus.InProgress)
+            if(UserStorage.UserRole != Role.Handyman || task.status == TaskStatus.InProgress || task.status == TaskStatus.Completed)
             {
                     startbutton.IsVisible = false;
             }
@@ -45,11 +45,11 @@ namespace ClearTask.Views
             {
                 endbutton.IsVisible = false;
             }
-            if(task.assignedTo != null)
+            if(task.assignedTo != ObjectId.Empty)
             {
                 AssignedBox.IsVisible = true;
             }
-            else if(task.startedBy == null)
+            else if(task.startedBy == ObjectId.Empty)
             {
                 AssignedBox.IsVisible = false;
                 StartedBox.IsVisible = false;
@@ -58,11 +58,7 @@ namespace ClearTask.Views
             {
                 StartedBox.IsVisible= true;
             }
-            if(task.deadline == new DateTime(2025, 1, 2))
-            {
-                DeadlineBlock.IsVisible = false;
-            }
-            else { DeadlineBlock.IsVisible = true; }
+
         }
 
         private async void OnBackButtonClicked(object sender, EventArgs e)

@@ -22,7 +22,6 @@ namespace ClearTask.Views
         public AddTask()
         {
             InitializeComponent();
-            DeadlinePicker.Date = new DateTime(2025, 1, 2);
             _viewModel = new TaskListViewModel();
             BindingContext = _viewModel;
             LoadUsers();

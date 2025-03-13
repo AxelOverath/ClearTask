@@ -70,15 +70,21 @@
 
                                     <!-- Deadline -->
                                     <StackLayout Orientation="Horizontal" 
-                                                 Grid.Row="2" 
-                                                 Grid.Column="0">
+             Grid.Row="2" 
+             Grid.Column="0">
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding deadline, Converter={StaticResource NullToBooleanConverter}}" Value="True">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
                                         <Label Text="Deadline: " 
-                                               FontSize="14" 
-                                               TextColor="#555555" />
-                                        <Label Text="{Binding deadline, StringFormat='{0:MM/dd/yyyy}', FallbackValue='No deadline'}" 
-                                               FontSize="14" 
-                                               TextColor="#E74C3C" 
-                                               FontAttributes="Bold" />
+           FontSize="14" 
+           TextColor="#555555" 
+          />
+                                        <Label Text="{Binding deadline, StringFormat='{0:MM/dd/yyyy}'}" 
+           FontSize="14" 
+           TextColor="#E74C3C" 
+           FontAttributes="Bold" />
                                     </StackLayout>
 
                                     <!-- Status Badge -->

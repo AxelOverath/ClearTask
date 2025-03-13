@@ -59,16 +59,13 @@
                        FontSize="16" 
                        TextColor="#666666" />
 
-                <!-- Divider -->
-                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
-
                 <!-- Task Image -->
                 <Image Source="{Binding TaskImageSource}" 
                        x:Name="ImageElement"
                     HeightRequest="200" 
                     Aspect="AspectFit" 
                     HorizontalOptions="Center" 
-                    />
+                />
 
                 <!-- Divider -->
                 <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
@@ -82,18 +79,20 @@
                             <Setter Property="IsVisible" Value="False" />
                         </DataTrigger>
                     </StackLayout.Triggers>
-                    <Label Text="Deadline" 
+  
+                    <Label Text="Deadline: " 
                         FontSize="18" 
                         FontAttributes="Bold" 
                         TextColor="#2C3E50" />
                     <Label Text="{Binding Task.deadline, StringFormat='{0:MMMM dd, yyyy}', FallbackValue='No deadline'}" 
                         FontSize="16" 
                         TextColor="#E74C3C" />
+                    <!-- Divider -->
+                    <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
+
                 </StackLayout>
 
-                <!-- Divider -->
-                <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
-                </VerticalStackLayout>
+               
 
                 
 
