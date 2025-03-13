@@ -47,6 +47,7 @@ namespace ClearTask.Data
 
             StartSectorenChangedListener();
 
+
         }
 
         public static IMongoCollection<Task_> TaskCollection => taskCollection;
@@ -166,7 +167,8 @@ namespace ClearTask.Data
                 .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
                                 change.OperationType == ChangeStreamOperationType.Update ||
                                 change.OperationType == ChangeStreamOperationType.Delete ||
-                            change.OperationType == ChangeStreamOperationType.Modify);
+                                change.OperationType == ChangeStreamOperationType.Replace ||
+                                change.OperationType == ChangeStreamOperationType.Modify);
 
             var cursor = await taskCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
 
@@ -270,6 +272,40 @@ namespace ClearTask.Data
                         {
                             Console.WriteLine($"Database change detected: {change.OperationType}");
                             SectorUpdated?.Invoke();
+                        }
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Change stream listening stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in change stream listener: {ex.Message}");
+                }
+            });
+        }
+        private static async void StartTagChangedListener()
+        {
+            Console.WriteLine("Listening for Sector changes...");
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<CustomTag>>()
+                .Match(change => change.OperationType == ChangeStreamOperationType.Insert ||
+                                change.OperationType == ChangeStreamOperationType.Update ||
+                                change.OperationType == ChangeStreamOperationType.Delete);
+
+            var cursor = await TagCollection.WatchAsync(pipeline, cancellationToken: _cts.Token);
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (await cursor.MoveNextAsync(_cts.Token))
+                    {
+                        foreach (var change in cursor.Current)
+                        {
+                            Console.WriteLine($"Database change detected: {change.OperationType}");
+                            TagUpdated?.Invoke();
                         }
                     }
                 }

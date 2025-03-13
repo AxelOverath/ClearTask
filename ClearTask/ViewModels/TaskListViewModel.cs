@@ -30,8 +30,8 @@ public class TaskListViewModel : INotifyPropertyChanged
 
     public TaskListViewModel()
     {
-        LoadTasks();
-        DatabaseService.TasksUpdated += async () => await LoadTasks(); // **Luisteren naar DB updates**
+       LoadTasks();
+       DatabaseService.TasksUpdated += async () => await LoadTasks(); // **Luisteren naar DB updates**
     }
 
     public async Task LoadTasks()
@@ -82,6 +82,7 @@ public class TaskListViewModel : INotifyPropertyChanged
             }
 
             Tasks = new ObservableCollection<Task_>(detailedTasks);
+            OnPropertyChanged(nameof(Tasks));
         }
         catch (Exception ex)
         {
