@@ -147,7 +147,7 @@ public partial class TaskDetailPageEdit : ContentPage, INotifyPropertyChanged
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("tasks");
+        await Shell.Current.GoToAsync("//tasks");
     }
 
     private async void LoadSectors()
