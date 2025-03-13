@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:StatusColorConverter x:Key="StatusColorConverter" />
+            <converters:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

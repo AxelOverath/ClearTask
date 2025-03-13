@@ -1,6 +1,7 @@
 using ClearTask.Models;
 using System.Linq;  // For LINQ operations (e.g., FirstOrDefault)
 using ClearTask.ViewModels;
+using ClearTask.Data;
 
 namespace ClearTask.Views;
 
@@ -10,6 +11,8 @@ public partial class TaskList : ContentPage
     {
         InitializeComponent();
         BindingContext = new TaskListViewModel();
+
+        
     }
 
     private async void NavigateToAddTaskPage(object sender, EventArgs e)
