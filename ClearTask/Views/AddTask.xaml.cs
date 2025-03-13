@@ -111,20 +111,14 @@ namespace ClearTask.Views
                 .Find(tag => generatedTags.Contains(tag.name))
                 .ToListAsync();
 
-            var datePick = new DateTime(2025, 1, 2);
-
-            if (DeadlinePicker.Date != datePick)
-            {
-                datePick = DeadlinePicker.Date;
-            }
-
             var newTask = new Task_
             {
                 title = title,
                 description = description,
                 photo = uploadedImageData != null ? uploadedImageData : null, // This now holds the binary data from the image
                 tags = matchingTags.Select(tag => tag.Id).ToList(),  // Adding the matching ObjectIds,  // Empty ObjectId list (update as necessary)
-                deadline = datePick,
+
+                deadline = DeadlinePicker.NullableDateTime,
                 status = TaskStatus.Pending,
                 assignedTo = (UserPicker.SelectedItem as User)?.Id ?? ObjectId.Empty,
                 sector = (SectorPicker.SelectedItem as Sector)?.Id ?? ObjectId.Empty,

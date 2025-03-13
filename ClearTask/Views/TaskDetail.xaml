@@ -73,16 +73,23 @@
                 <!-- Divider -->
                 <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
 
-                <VerticalStackLayout x:Name="DeadlineBlock">
-                    <!-- Deadline -->
-                
-                <Label Text="Deadline" 
-                       FontSize="18" 
-                       FontAttributes="Bold" 
-                       TextColor="#2C3E50" />
-                <Label Text="{Binding Task.deadline, StringFormat='{0:MMMM dd, yyyy}', FallbackValue='No deadline'}" 
-                       FontSize="16" 
-                       TextColor="#E74C3C" />
+                <!-- Deadline -->
+                <StackLayout Orientation="Horizontal" 
+                  Grid.Row="2" 
+                     Grid.Column="0">
+                    <StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding Task.deadline, Converter={StaticResource NullToBooleanConverter}}" Value="True">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+                    <Label Text="Deadline" 
+                        FontSize="18" 
+                        FontAttributes="Bold" 
+                        TextColor="#2C3E50" />
+                    <Label Text="{Binding Task.deadline, StringFormat='{0:MMMM dd, yyyy}', FallbackValue='No deadline'}" 
+                        FontSize="16" 
+                        TextColor="#E74C3C" />
+                </StackLayout>
 
                 <!-- Divider -->
                 <BoxView HeightRequest="1" BackgroundColor="#D1D1D1" />
