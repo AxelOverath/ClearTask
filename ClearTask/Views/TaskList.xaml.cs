@@ -1,6 +1,7 @@
 using ClearTask.Models;
 using System.Linq;  // For LINQ operations (e.g., FirstOrDefault)
 using ClearTask.ViewModels;
+using ClearTask.Data;
 
 namespace ClearTask.Views;
 
